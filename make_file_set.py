@@ -14,8 +14,6 @@ if os.path.isdir(path_output): #check to make sure the folder exists
 else:
 	print('Path not found. Try again.')
 
-# path_input = 'sampledata/temp_critterlist.csv'
-
 Decider = pandas.read_csv(path_input)
 
 print("Here are the available column names")
