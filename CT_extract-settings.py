@@ -108,9 +108,9 @@ with open(path_output+'.csv','w') as CSVFile:
 			SearchSensitivity = re.search('^CameraGain=(.*)$',Text2[Line])
 			if SearchSensitivity:
 				Sensitivity = SearchSensitivity.group(1)
-		Watts = float(Current)*float(Voltage)/10000 # calculate watts
+		Watts = float(Current)*float(Voltage)/1000 # calculate watts
 		FileID = re.search('([^\/]*)\.pca',filename).group(1) # pull out file name
-		RowEntry = [FileID, VoxelSize, Voltage, Current, Watts, TimingVal, NumberImages, Avg, Skip, Sensitivity, Filter, DetectorShift, DetectorCalibration]
+		RowEntry = [FileID, VoxelSize, Voltage, Current, Watts, TimingVal, NumberImages, Avg, Skip, Sensitivity, Filter, DetectorShift]
 		DataWriter.writerow(RowEntry)
 
 CSVFile.close()
