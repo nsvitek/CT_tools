@@ -55,7 +55,7 @@ path_output = ""
 path_output = raw_input("Enter the filename for your results (don't include the file ending).")
 		
 # write the header for values
-ColumnNames = ['file_name','voxel_size_mm','voltage_kv','amperage_ua','watts','exposure_time','projections','frame_averaging','skipped_frames','sensitivity','filter','detector_shift','detector_calibration']
+ColumnNames = ['file_name','voxel_size_mm','voltage_kv','amperage_ua','watts','exposure_time','projections','frame_averaging','skipped_frames','sensitivity','filter','detector_shift']
 
 # write a csv with results
 with open(path_output+'.csv','w') as CSVFile:
@@ -78,9 +78,6 @@ with open(path_output+'.csv','w') as CSVFile:
 				DetectorShift = 'False'
 			if not SearchShift:
 				DetectorShift = 'False'				
-			SearchCalib = re.search('^MGainMode=(.*)',Text2[Line])
-			if SearchCalib:
-				DetectorCalibration = 'True'
 			SearchVox = re.search('^Voxel[sS]ize.*=([0-9\.]*)',Text2[Line])
 			if SearchVox:
 				VoxelSize = SearchVox.group(1)
@@ -129,7 +126,7 @@ with open(path_output+'.csv','w') as CSVFile:
 					NumberImages = SearchImageNumber.group(1)
 		Watts = float(Current)*float(Voltage)/10000 # calculate watts
 		FileID = re.search('([^\/]*)\.pca',filename).group(1) # pull out file name
-		RowEntry = [FileID, VoxelSize, Voltage, Current, Watts, TimingVal, NumberImages, Avg, Skip, Sensitivity, Filter, DetectorShift, DetectorCalibration]
+		RowEntry = [FileID, VoxelSize, Voltage, Current, Watts, TimingVal, NumberImages, Avg, Skip, Sensitivity, Filter, DetectorShift]
 		DataWriter.writerow(RowEntry)
 
 CSVFile.close()
