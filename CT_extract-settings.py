@@ -6,7 +6,7 @@
 import logging, time, os, re, csv
 
 # start log for troubleshooting 
-logging.basicConfig(level=logging.INFO,filename='CT_extract-settings'+time.strftime('%Y-%m-%d')+'.log',filemode='a')
+# logging.basicConfig(level=logging.INFO,filename='CT_extract-settings'+time.strftime('%Y-%m-%d')+'.log',filemode='a')
 
 # first, user decides if data should be drawn from a single file or all files in a folder.
 user_input = raw_input('Do you want to extract from a single file or all files in a directory? [single/all] ')
@@ -76,10 +76,12 @@ with open(path_output+'.csv','w') as CSVFile:
 				DetectorShift = 'True'
 			if Line2 == 'Enable=0':
 				DetectorShift = 'False'
+			if not SearchShift:
+				DetectorShift = 'False'				
 			SearchCalib = re.search('^MGainMode=(.*)',Text2[Line])
 			if SearchCalib:
 				DetectorCalibration = 'True'
-			SearchVox = re.search('^VoxelSizeX=([0-9\.]*)',Text2[Line])
+			SearchVox = re.search('^Voxel[sS]ize.*=([0-9\.]*)',Text2[Line])
 			if SearchVox:
 				VoxelSize = SearchVox.group(1)
 			SearchImages = re.search('^\[CT\]',Text2[Line])
@@ -93,6 +95,10 @@ with open(path_output+'.csv','w') as CSVFile:
 			SearchAvg = re.search('^Avg=([0-9\.]*)',Text2[Line])
 			if SearchAvg:
 				Avg = SearchAvg.group(1)
+			if not SearchAvg: #try an alternative search term in PCA if first doesn't work
+				SearchAvg = re.search('^Averaging=([0-9\.]*)',Text2[Line])
+				if SearchAvg:
+					Avg = SearchAvg.group(1)
 			SearchSkip = re.search('^Skip=([0-9\.]*)',Text2[Line])
 			if SearchSkip:
 				Skip = SearchSkip.group(1)
@@ -105,9 +111,22 @@ with open(path_output+'.csv','w') as CSVFile:
 			SearchFilter = re.search('^Filter=(.*)$',Text2[Line])
 			if SearchFilter:
 				Filter = SearchFilter.group(1)
+			if not SearchFilter: #try an alternative search term in PCA if first doesn't work
+				SearchFilter = re.search('^XRayFilter=(.*)$',Text2[Line])
+				if SearchFilter:
+					Line2 = Text2[Line+1]
+					SearchFilter2 = re.search('XRayFilterThickness=([0-9\.]*)', Line2)
+					Filter = SearchFilter2.group(1) + SearchFilter.group(1)
 			SearchSensitivity = re.search('^CameraGain=(.*)$',Text2[Line])
 			if SearchSensitivity:
 				Sensitivity = SearchSensitivity.group(1)
+		if not SearchImages: #if the first search term for number of images didn't work, try an alternative
+			for Line in range(len(Text2)): #search through lines for relevant values
+				SearchImages = re.search('^\[ACQUISITION\]',Text2[Line])
+				if SearchImages:
+					Line2 = Text2[Line+1]
+					SearchImageNumber = re.search('NumberImages=([0-9\.]*)', Line2)
+					NumberImages = SearchImageNumber.group(1)
 		Watts = float(Current)*float(Voltage)/10000 # calculate watts
 		FileID = re.search('([^\/]*)\.pca',filename).group(1) # pull out file name
 		RowEntry = [FileID, VoxelSize, Voltage, Current, Watts, TimingVal, NumberImages, Avg, Skip, Sensitivity, Filter, DetectorShift, DetectorCalibration]
