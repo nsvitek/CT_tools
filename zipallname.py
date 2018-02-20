@@ -14,7 +14,7 @@ logging.basicConfig(level=logging.INFO,filename='zipallname'+time.strftime('%Y-%
 # set variables
 
 #set the container folder where the script should start looking for folders
-ContainerName = '/cygdrive/e'
+ContainerName = '/cygdrive/d/CT_maniculatus_repositing'
 
 #set the file/column location for the list of desired specimens
 DeciderFile = 'C://Users/N.S/Documents/Dissertation/modern/podomys/podomys_access.csv'
@@ -22,13 +22,13 @@ ColName = 'specimen_num'
 
 #set search levels for folder tree. If more levels, code will need more tweaking
 # HighestSearch = 'podomys_floridanus'
-HighestSearch = 'CT Data'
+HighestSearch = 'maniculatus*'
 
-
-#decide if you want to zip raw data (folders ending in 'raw') or specimen data
+#decide if you want to zip data from all specimens or a select list (Raw?), or all specimens that have a certain prefix (RawPrefix)
+#and then decide if you want to zip .tiff's only or if you want to zip up all files.
 Raw = True
-ImgOnly = True
 RawPrefix = ''
+ImgOnly = True
 
 # End variable setting.
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # .
@@ -36,18 +36,17 @@ RawPrefix = ''
 # get full path for Container
 Container = os.path.join(os.path.expanduser('~'),ContainerName)
 # read the file containing specimen names
-Decider = pandas.read_csv(DeciderFile)
-def get_spec(csv, column_name):
-	return getattr(csv,column_name)
+# Decider = pandas.read_csv(DeciderFile)
+# def get_spec(csv, column_name):
+	# return getattr(csv,column_name)
 
-#make an object containing all of the specimen names
-Specimen = get_spec(Decider,ColName)
-Specimens = Specimen.tolist()
+# #make an object containing all of the specimen names
+# Specimen = get_spec(Decider,ColName)
+# Specimens = Specimen.tolist()
 
 #for each entry in the list, find a folder that contains that string
 level1 = goldenmole(Container,HighestSearch,desire='folder')
 level2 = []
-
  
 for directory in level1:
 	for subdirectory in os.listdir(os.path.join(directory)):
@@ -114,6 +113,7 @@ if Raw != True:
 ####QUICK CHANGE
 # level3 = [level2]
 ####END CHANGE
+
 if Raw == True: 
 	for folder in level3:
 		counter2 = 0
@@ -121,9 +121,9 @@ if Raw == True:
 			os.chdir(level3[counter][counter2])
 			if ImgOnly == True:
 				#check if folder exists
-				if not os.path.exists(level3[counter][counter2].split('/')[-1]+'_img.zip'):
-					print 'zipping ' + level3[counter][counter2].split('/')[-1] + '_img'
-					file = zipfile.ZipFile(level3[counter][counter2].split('/')[-1]+'_img.zip', 'w',allowZip64=True)
+				if not os.path.exists(level3[counter][counter2].split('/')[-1]+'_mandible.zip'):
+					print 'zipping ' + level3[counter][counter2].split('/')[-1] + '_mandible'
+					file = zipfile.ZipFile(level3[counter][counter2].split('/')[-1]+'_mandible.zip', 'w',allowZip64=True)
 					for name in glob.glob('*.tif'):
 						print name
 						file.write(name, os.path.basename(name), zipfile.ZIP_DEFLATED)
