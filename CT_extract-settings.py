@@ -57,79 +57,89 @@ path_output = raw_input("Enter the filename for your results (don't include the 
 # write the header for values
 ColumnNames = ['file_name','voxel_size_mm','voltage_kv','amperage_ua','watts','exposure_time','projections','frame_averaging','skipped_frames','sensitivity','filter','detector_shift']
 
+#set up holder list for information
+Results = [[]]*(3+1)
+Results[0] = ColumnNames
+i = 1
+
+# extract relevant information from each pca file
+for filename in FileNames:
+	InFile = open(filename,'r') #open file
+	Text1 = InFile.read()
+	InFile.close() #close file, leaving behind the text object
+	Text2 = re.split("\r\n+", Text1) #split text object into lines
+	Line2 = None
+	for Line in range(len(Text2)): #search through lines for relevant values
+		SearchShift = re.search('^\[DetectorShift\]',Text2[Line])
+		if SearchShift:
+			Line3 = Text2[Line+1]
+			if Line3 == 'Enable=1':
+				DetectorShift = 'True'
+			if Line3 == 'Enable=0':
+				DetectorShift = 'False'
+		SearchVox = re.search('^Voxel[sS]ize.*=([0-9\.]*)',Text2[Line])
+		if SearchVox:
+			VoxelSize = SearchVox.group(1)
+		SearchImages = re.search('^\[CT\]',Text2[Line])
+		if SearchImages:
+			Line2 = Text2[Line+2]
+			SearchImageNumber = re.search('NumberImages=([0-9\.]*)', Line2)
+			NumberImages = SearchImageNumber.group(1)
+		SearchTiming = re.search('^TimingVal=([0-9\.]*)',Text2[Line])
+		if SearchTiming:
+			TimingVal = SearchTiming.group(1)
+		SearchAvg = re.search('^Avg=([0-9\.]*)',Text2[Line])
+		if SearchAvg:
+			Avg = SearchAvg.group(1)
+		if not SearchAvg: #try an alternative search term in PCA if first doesn't work
+			SearchAvg = re.search('^Averaging=([0-9\.]*)',Text2[Line])
+			if SearchAvg:
+				Avg = SearchAvg.group(1)
+		SearchSkip = re.search('^Skip=([0-9\.]*)',Text2[Line])
+		if SearchSkip:
+			Skip = SearchSkip.group(1)
+		SearchVoltage = re.search('^Voltage=([0-9\.]*)',Text2[Line])
+		if SearchVoltage:
+			Voltage = SearchVoltage.group(1)
+		SearchCurrent = re.search('^Current=([0-9\.]*)',Text2[Line])
+		if SearchCurrent:
+			Current = SearchCurrent.group(1)
+		SearchFilter = re.search('^Filter=(.*)$',Text2[Line])
+		if SearchFilter:
+			Filter = SearchFilter.group(1)
+		if not SearchFilter: #try an alternative search term in PCA if first doesn't work
+			SearchFilter = re.search('^XRayFilter=(.*)$',Text2[Line])
+			if SearchFilter:
+				Line2 = Text2[Line+1]
+				SearchFilter2 = re.search('XRayFilterThickness=([0-9\.]*)', Line2)
+				Filter = SearchFilter2.group(1) + SearchFilter.group(1)
+		SearchSensitivity = re.search('^CameraGain=(.*)$',Text2[Line])
+		if SearchSensitivity:
+			Sensitivity = SearchSensitivity.group(1)
+	if not SearchImages: #if the first search term for number of images didn't work, try an alternative
+		for Line in range(len(Text2)): #search through lines for relevant values
+			SearchImages = re.search('^\[ACQUISITION\]',Text2[Line])
+			if SearchImages:
+				Line2 = Text2[Line+1]
+				SearchImageNumber = re.search('NumberImages=([0-9\.]*)', Line2)
+				NumberImages = SearchImageNumber.group(1)
+	if not Line3:
+		DetectorShift = 'False'				
+	Watts = float(Current)*float(Voltage)/10000 # calculate watts
+	FileID = re.search('([^\/]*)\.pca',filename).group(1) # pull out file name
+	RowEntry = [FileID, VoxelSize, Voltage, Current, Watts, TimingVal, NumberImages, Avg, Skip, Sensitivity, Filter, DetectorShift]
+	Results[i] = RowEntry
+	i = i+1
+	print(RowEntry)
+	
+
 # write a csv with results
 with open(path_output+'.csv','w') as CSVFile:
 	DataWriter = csv.writer(CSVFile)
-	DataWriter.writerow(ColumnNames)
-	# extract relevant information from each pca file
-	for filename in FileNames:
-		InFile = open(filename,'r') #open file
-		Text1 = InFile.read()
-		InFile.close() #close file, leaving behind the text object
-		Text2 = re.split("\r\n+", Text1) #split text object into lines
-		Line2 = None
-		for Line in range(len(Text2)): #search through lines for relevant values
-			SearchShift = re.search('^\[DetectorShift\]',Text2[Line])
-			if SearchShift:
-				Line3 = Text2[Line+1]
-				if Line3 == 'Enable=1':
-					DetectorShift = 'True'
-				if Line3 == 'Enable=0':
-					DetectorShift = 'False'
-			SearchVox = re.search('^Voxel[sS]ize.*=([0-9\.]*)',Text2[Line])
-			if SearchVox:
-				VoxelSize = SearchVox.group(1)
-			SearchImages = re.search('^\[CT\]',Text2[Line])
-			if SearchImages:
-				Line2 = Text2[Line+2]
-				SearchImageNumber = re.search('NumberImages=([0-9\.]*)', Line2)
-				NumberImages = SearchImageNumber.group(1)
-			SearchTiming = re.search('^TimingVal=([0-9\.]*)',Text2[Line])
-			if SearchTiming:
-				TimingVal = SearchTiming.group(1)
-			SearchAvg = re.search('^Avg=([0-9\.]*)',Text2[Line])
-			if SearchAvg:
-				Avg = SearchAvg.group(1)
-			if not SearchAvg: #try an alternative search term in PCA if first doesn't work
-				SearchAvg = re.search('^Averaging=([0-9\.]*)',Text2[Line])
-				if SearchAvg:
-					Avg = SearchAvg.group(1)
-			SearchSkip = re.search('^Skip=([0-9\.]*)',Text2[Line])
-			if SearchSkip:
-				Skip = SearchSkip.group(1)
-			SearchVoltage = re.search('^Voltage=([0-9\.]*)',Text2[Line])
-			if SearchVoltage:
-				Voltage = SearchVoltage.group(1)
-			SearchCurrent = re.search('^Current=([0-9\.]*)',Text2[Line])
-			if SearchCurrent:
-				Current = SearchCurrent.group(1)
-			SearchFilter = re.search('^Filter=(.*)$',Text2[Line])
-			if SearchFilter:
-				Filter = SearchFilter.group(1)
-			if not SearchFilter: #try an alternative search term in PCA if first doesn't work
-				SearchFilter = re.search('^XRayFilter=(.*)$',Text2[Line])
-				if SearchFilter:
-					Line2 = Text2[Line+1]
-					SearchFilter2 = re.search('XRayFilterThickness=([0-9\.]*)', Line2)
-					Filter = SearchFilter2.group(1) + SearchFilter.group(1)
-			SearchSensitivity = re.search('^CameraGain=(.*)$',Text2[Line])
-			if SearchSensitivity:
-				Sensitivity = SearchSensitivity.group(1)
-		if not SearchImages: #if the first search term for number of images didn't work, try an alternative
-			for Line in range(len(Text2)): #search through lines for relevant values
-				SearchImages = re.search('^\[ACQUISITION\]',Text2[Line])
-				if SearchImages:
-					Line2 = Text2[Line+1]
-					SearchImageNumber = re.search('NumberImages=([0-9\.]*)', Line2)
-					NumberImages = SearchImageNumber.group(1)
-		if not Line3:
-			DetectorShift = 'False'				
-		Watts = float(Current)*float(Voltage)/10000 # calculate watts
-		FileID = re.search('([^\/]*)\.pca',filename).group(1) # pull out file name
-		RowEntry = [FileID, VoxelSize, Voltage, Current, Watts, TimingVal, NumberImages, Avg, Skip, Sensitivity, Filter, DetectorShift]
-		DataWriter.writerow(RowEntry)
+	for i in range(0,len(Results)):
+		DataWriter.writerow(Results[i])
 
 CSVFile.close()
 
-# end logging
-logging.info('End of script.')
+# # end logging
+# logging.info('End of script.')
