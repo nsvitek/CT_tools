@@ -67,7 +67,7 @@ for filename in FileNames:
 	InFile = open(filename,'r') #open file
 	Text1 = InFile.read()
 	InFile.close() #close file, leaving behind the text object
-	Text2 = re.split("\r\n+", Text1) #split text object into lines
+	Text2 = str.splitlines(Text1) #split text object into lines
 	Line2 = None
 	for Line in range(len(Text2)): #search through lines for relevant values
 		SearchShift = re.search('^\[DetectorShift\]',Text2[Line])
@@ -80,6 +80,7 @@ for filename in FileNames:
 		SearchVox = re.search('^Voxel[sS]ize.*=([0-9\.]*)',Text2[Line])
 		if SearchVox:
 			VoxelSize = SearchVox.group(1)
+			print(VoxelSize)
 		SearchImages = re.search('^\[CT\]',Text2[Line])
 		if SearchImages:
 			Line2 = Text2[Line+2]
@@ -123,14 +124,14 @@ for filename in FileNames:
 				Line2 = Text2[Line+1]
 				SearchImageNumber = re.search('NumberImages=([0-9\.]*)', Line2)
 				NumberImages = SearchImageNumber.group(1)
-	if not Line3:
+	if 'Line3' not in locals():
 		DetectorShift = 'False'				
 	Watts = float(Current)*float(Voltage)/10000 # calculate watts
 	FileID = re.search('([^\/]*)\.pca',filename).group(1) # pull out file name
 	RowEntry = [FileID, VoxelSize, Voltage, Current, Watts, TimingVal, NumberImages, Avg, Skip, Sensitivity, Filter, DetectorShift]
 	Results[i] = RowEntry
 	i = i+1
-	print(RowEntry)
+	# print(RowEntry)
 	
 
 # write a csv with results
