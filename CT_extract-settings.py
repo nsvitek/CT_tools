@@ -55,7 +55,7 @@ path_output = ""
 path_output = raw_input("Enter the filename for your results (don't include the file ending).")
 		
 # write the header for values
-ColumnNames = ['file_name','voxel_size_mm','voltage_kv','amperage_ua','watts','exposure_time','projections','frame_averaging','skipped_frames','sensitivity','filter','detector_shift']
+ColumnNames = ['file_name','voxel_size_mm','voxel_size_um','voltage_kv','amperage_ua','watts','exposure_time','projections','frame_averaging','skipped_frames','sensitivity','filter','detector_shift']
 
 #set up holder list for information
 Results = [[]]*(3+1)
@@ -70,13 +70,6 @@ for filename in FileNames:
 	Text2 = str.splitlines(Text1) #split text object into lines
 	Line2 = None
 	for Line in range(len(Text2)): #search through lines for relevant values
-		SearchShift = re.search('^\[DetectorShift\]',Text2[Line])
-		if SearchShift:
-			Line3 = Text2[Line+1]
-			if Line3 == 'Enable=1':
-				DetectorShift = 'True'
-			if Line3 == 'Enable=0':
-				DetectorShift = 'False'
 		SearchVox = re.search('^Voxel[sS]ize.*=([0-9\.]*)',Text2[Line])
 		if SearchVox:
 			VoxelSize = SearchVox.group(1)
@@ -124,11 +117,10 @@ for filename in FileNames:
 				Line2 = Text2[Line+1]
 				SearchImageNumber = re.search('NumberImages=([0-9\.]*)', Line2)
 				NumberImages = SearchImageNumber.group(1)
-	if 'Line3' not in locals():
-		DetectorShift = 'False'				
 	Watts = float(Current)*float(Voltage)/10000 # calculate watts
+	VoxelSizeUM = VoxelSize*1000
 	FileID = re.search('([^\/]*)\.pca',filename).group(1) # pull out file name
-	RowEntry = [FileID, VoxelSize, Voltage, Current, Watts, TimingVal, NumberImages, Avg, Skip, Sensitivity, Filter, DetectorShift]
+	RowEntry = [FileID, VoxelSize, VoxelSizeUM,Voltage, Current, Watts, TimingVal, NumberImages, Avg, Skip, Sensitivity, Filter, DetectorShift]
 	Results[i] = RowEntry
 	i = i+1
 	# print(RowEntry)
