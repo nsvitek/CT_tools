@@ -55,7 +55,7 @@ path_output = ""
 path_output = raw_input("Enter the filename for your results (don't include the file ending).")
 		
 # write the header for values
-ColumnNames = ['file_name','voxel_size_mm','voxel_size_um','voltage_kv','amperage_ua','watts','exposure_time','projections','frame_averaging','skipped_frames','sensitivity','filter','detector_shift']
+ColumnNames = ['file_name','voxel_size_mm','voxel_size_um','voltage_kv','amperage_ua','watts','exposure_time','projections','frame_averaging','skipped_frames','sensitivity','filter']
 
 #set up holder list for information
 Results = [[]]*(3+1)
@@ -118,9 +118,9 @@ for filename in FileNames:
 				SearchImageNumber = re.search('NumberImages=([0-9\.]*)', Line2)
 				NumberImages = SearchImageNumber.group(1)
 	Watts = float(Current)*float(Voltage)/10000 # calculate watts
-	VoxelSizeUM = VoxelSize*1000
+	VoxelSizeUM = float(VoxelSize)*1000
 	FileID = re.search('([^\/]*)\.pca',filename).group(1) # pull out file name
-	RowEntry = [FileID, VoxelSize, VoxelSizeUM,Voltage, Current, Watts, TimingVal, NumberImages, Avg, Skip, Sensitivity, Filter, DetectorShift]
+	RowEntry = [FileID, VoxelSize, VoxelSizeUM,Voltage, Current, Watts, TimingVal, NumberImages, Avg, Skip, Sensitivity, Filter]
 	Results[i] = RowEntry
 	i = i+1
 	# print(RowEntry)
