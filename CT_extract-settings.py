@@ -55,10 +55,10 @@ path_output = ""
 path_output = raw_input("Enter the filename for your results (don't include the file ending).")
 		
 # write the header for values
-ColumnNames = ['file_name','voxel_size_mm','voxel_size_um','voltage_kv','amperage_ua','watts','exposure_time','projections','frame_averaging','skipped_frames','sensitivity','filter']
+ColumnNames = ['file_name','X_voxel_size_mm','Y_voxel_size_mm','Z_voxel_size_mm','voltage_kv','amperage_ua','watts','exposure_time','filter','projections','frame_averaging']
 
 #set up holder list for information
-Results = [[]]*(3+1)
+Results = [[]]*(10000000+1)
 Results[0] = ColumnNames
 i = 1
 
@@ -117,10 +117,11 @@ for filename in FileNames:
 				Line2 = Text2[Line+1]
 				SearchImageNumber = re.search('NumberImages=([0-9\.]*)', Line2)
 				NumberImages = SearchImageNumber.group(1)
-	Watts = float(Current)*float(Voltage)/10000 # calculate watts
+	Watts = float(Current)*float(Voltage)/1000 # calculate watts
 	VoxelSizeUM = float(VoxelSize)*1000
+	ExposureTime = float(TimingVal)/1000
 	FileID = re.search('([^\/]*)\.pca',filename).group(1) # pull out file name
-	RowEntry = [FileID, VoxelSize, VoxelSizeUM,Voltage, Current, Watts, TimingVal, NumberImages, Avg, Skip, Sensitivity, Filter]
+	RowEntry = [FileID, VoxelSize, VoxelSize, VoxelSize, Voltage, Current, Watts, ExposureTime, Filter, NumberImages, Avg]
 	Results[i] = RowEntry
 	i = i+1
 	# print(RowEntry)
