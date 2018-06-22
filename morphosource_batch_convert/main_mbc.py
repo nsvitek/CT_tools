@@ -5,30 +5,34 @@ ALL_CAPS = variables the user should set.
 note: Assumptions and options for future code expansion are hidden in the imported files. Check 'em out.
 
 Initial build uses Python3.6.5
-Dependencies: pandas
+Dependencies: pandas, idigbio
+To install dependencies: recommend 'conda install pandas' and 'pip install idigbio' in anaconda 
 """
 #import modules to make everything work. Note additional modules in imported files.  
-import time #for log_data.py
+#import time #for log_data.py
 import pandas as pd #for input_specimens.py
 
 # indicates if batch is part of oVert grant. Affects funding information
 OVERT = True 
 #%% log file
-#Name puts log file in "logs" folder labelled with the date. 
-LOG_FILENAME = 'logs/log-'+time.strftime('%Y-%m-%d')+'.log' #-%H-%M for hour and minute
-from log_data import log_debug 
-MyLogger = log_debug(LOG_FILENAME)
+##Name puts log file in "logs" folder labelled with the date. 
+#LOG_FILENAME = 'logs/log-'+time.strftime('%Y-%m-%d')+'.log' #-%H-%M for hour and minute
+#from log_data import log_debug 
+#MyLogger = log_debug(LOG_FILENAME)
 #%% input catalogue numbers
 #path to where spreadsheet is located
 INPUT_PATH = 'sample_data' 
 #name of spreadsheet file. 
 INPUT_FILE = 'input_sample1.csv'
 #INPUT_FILE = 'input_sample3.xlsx'
+#name of column with catalog numbers
 SPECIMEN_NAME = 'Catalog number'
+#name of column with genus names
 GENUS = 'Genus'
+#how institution and number are separated in SPECIMEN_NAME column
 SEPARATOR = ' ' #could also be '_' or '-' ' '.
 #start
-MyLogger.debug('Starting specimen name input.')
+#MyLogger.debug('Starting specimen name input.')
 import input_specimens as inspec
 UserInputRaw = inspec.read_user_input(INPUT_PATH, INPUT_FILE)
 ### ! Future: use debug log to check here that file was able to be read properly
@@ -79,10 +83,13 @@ CollectionsChoice = PossibleCollections[BestGuess]
 
 #for each, pull the Occurrence IDs.
 ### ! Future: Don't assume that the user put only one institution in the spreadsheet. Check and warn. 
-Institutions = [SpecimensSplit[0][0]]*len(SpecimensSplit) #this is terrible. Change SpecimensSplit to dataframe above
+Institutions = [] #this is terrible. Change SpecimensSplit to dataframe above
 Collections = [CollectionsChoice]*len(SpecimensSplit)
+Numbers = [] #this is terrible. Change SpecimensSplit to dataframe above
 OccurrenceIDs = []
 for i in range(len(SpecimensSplit)):
+    Institutions.append(SpecimensSplit[i][0]) #this is terrible. Change in future.
+    Numbers.append(SpecimensSplit[i][1]) #this is terrible. Change in future.
     query = {"institutioncode": SpecimensSplit[i][0],
              "catalognumber": SpecimensSplit[i][1],
              "collectioncode": CollectionsChoice}
@@ -93,6 +100,7 @@ for i in range(len(SpecimensSplit)):
 
 SpecimenDictionary = {'Institution': Institutions,
                   'Collection' : Collections,
+                  'CatalogNumber': Numbers,
                   'OccurrenceID': OccurrenceIDs}
 SpecimenDf = pd.DataFrame.from_dict(SpecimenDictionary)
 
