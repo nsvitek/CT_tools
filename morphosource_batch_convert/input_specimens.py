@@ -15,7 +15,7 @@ import re
 #%% read file
 def read_user_input(input_path, input_file):
     """ reads in user-provided specimen data """
-    file_suffix = re.match('.*\.(.*)',input_file).group(1) #get file ending
+    file_suffix = re.match('.*\.(.*)$',input_file).group(1) #get file ending
     if (file_suffix == "csv"): #if file is csv
         user_input_raw = pd.read_csv(input_path + '/' + input_file)
     if (file_suffix == "xlsx"): #if file is excel spreadsheet
@@ -25,10 +25,25 @@ def read_user_input(input_path, input_file):
         print(ErrorMessage)
     return user_input_raw
 
-#def read_catalog_numbers(user_input_raw, specimen_names):
-#    """ pulls out a list of catalog numbers, broken into segments """
-#    #pull out specimen names
-#    specimens_raw = user_input_raw[specimen_names]
-#    #break up the catalogue number into parts
-#    specimens_split = specimens_raw.str.split('[ \-\_]+',expand=True)
-#    return specimens_split
+#%% choose specimen name column
+#UserInputRaw is the data frame resulting from read_user_input()
+def read_catalog_numbers(UserInputRaw):
+    print() #providing separation between choices for the eye. 
+    print()
+    print()
+    print("### Column Options")
+    for i in range(len(UserInputRaw.columns)):
+        print(str(i) + ": " + UserInputRaw.columns[i])
+    SpecimenName = input("Select the column number containing catalog numbers:")
+    SpecimensRaw = UserInputRaw.iloc[:,int(SpecimenName)]
+    return SpecimensRaw
+
+#%%
+def parse_catalog_numbers(UserInputRaw,SpecimenName):
+    print() #providing separation between choices for the eye. 
+    print()
+    print()
+    print("### Institution, Number Options")
+    #pull out specimen names
+    return SpecimensRaw
+
