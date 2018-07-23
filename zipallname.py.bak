@@ -1,7 +1,6 @@
 #! /bin/env python
 ### script to automatically zip tif image stacks in every folder that matches a given specimen name
 
-#from __future__ import print_function
 import pandas, zipfile, os, glob, logging, time
 #weird import call is because I generally test outside of scripts directory.
 #if in scripts directory, can simply run line:
@@ -94,20 +93,20 @@ if Raw != True:
 counter = 0
 if Raw != True:
 	for specimen in level3:
-		print('zipping ' + level3[counter][0].split('/')[-1])
+		print 'zipping ' + level3[counter][0].split('/')[-1]
 		os.chdir(level3[counter][0])
 		#if there are .tif files in there and the folder doesn't already exist, go ahead.
 		if not os.path.exists(level3[counter][0].split('/')[-1]+'img.zip'):
 			file = zipfile.ZipFile(level3[counter][0].split('/')[-1]+'_tif.zip', 'w',allowZip64=True)
 			for name in glob.glob('*.tif'):
-				print(name)
+				print name
 				file.write(name, os.path.basename(name), zipfile.ZIP_DEFLATED)
 			#if there are no files, print "is this already zipped?"
 			file.close()
 			os.chdir(Container)
-			print('finished zipping ' + level3[counter][0].split('/')[-1])
+			print 'finished zipping ' + level3[counter][0].split('/')[-1]
 		else: 
-			print('FOLDER ALREADY EXISTS. SKIPPED.')
+			print 'FOLDER ALREADY EXISTS. SKIPPED.'
 			logging.info('Folder %s already exists', level3[counter][0].split('/')[-1])
 		counter = counter + 1
 
@@ -123,15 +122,15 @@ if Raw == True:
 			if ImgOnly == True:
 				#check if folder exists
 				if not os.path.exists(level3[counter][counter2].split('/')[-1]+'_mandible.zip'):
-					print('zipping ' + level3[counter][counter2].split('/')[-1] + '_mandible')
+					print 'zipping ' + level3[counter][counter2].split('/')[-1] + '_mandible'
 					file = zipfile.ZipFile(level3[counter][counter2].split('/')[-1]+'_mandible.zip', 'w',allowZip64=True)
 					for name in glob.glob('*.tif'):
-						print(name)
+						print name
 						file.write(name, os.path.basename(name), zipfile.ZIP_DEFLATED)
 				
 					file.close()
 				else:
-					print('FOLDER ALREADY EXISTS. SKIPPED.')
+					print 'FOLDER ALREADY EXISTS. SKIPPED.'
 					logging.info('Folder %s already exists', level3[counter][counter2].split('/')[-1])
 				
 			if ImgOnly == False:
@@ -140,7 +139,7 @@ if Raw == True:
 					os.chdir('..')
 					#check one level up, too.
 					if not os.path.exists(level3[counter][counter2]+'.zip'):				
-						print('zipping ' + level3[counter][counter2].split('/')[-1])
+						print 'zipping ' + level3[counter][counter2].split('/')[-1]
 						file = zipfile.ZipFile(level3[counter][counter2].split('/')[-1]+'.zip', 'w',allowZip64=True)
 						for root, _, filenames in os.walk(os.path.basename(level3[counter][counter2])):
 							for name in filenames:
@@ -151,14 +150,14 @@ if Raw == True:
 						file.close()
 				
 					else:
-						print('FOLDER IN FOLDER. SKIPPED.')
+						print 'FOLDER IN FOLDER. SKIPPED.'
 						logging.info('Folder %s already exists in folder', level3[counter][counter2].split('/')[-1])
 			
 				else:
-					print('FOLDER ALREADY EXISTS. SKIPPED.')
+					print 'FOLDER ALREADY EXISTS. SKIPPED.'
 					logging.info('Folder %s already exists', level3[counter][counter2].split('/')[-1])
 			
-			print('finished zipping ' + os.getcwd().split('/')[-1])
+			print 'finished zipping ' + os.getcwd().split('/')[-1]
 			logging.info('Finished zipping ' + level3[counter][counter2].split('/')[-1])
 			os.chdir(Container)
 			

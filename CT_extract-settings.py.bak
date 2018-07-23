@@ -3,7 +3,6 @@
 
 
 ### FUTURE NOTE: Is "[AutoScO] \n Active=1" the part where it specifies auto scan optimization?
-#from __future__ import print_function
 import logging, time, os, re, csv
 
 # start log for troubleshooting 
