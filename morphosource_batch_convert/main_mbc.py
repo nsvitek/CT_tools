@@ -15,19 +15,10 @@ re, sys, os should be native
 
 note: Assumptions and options for future code expansion are hidden in the imported files. Check 'em out.
 """
-
-#%% USER SETS THESE VARIABLES
-#ASSUMPTION: Specimens have occurrence IDs in iDigBio. If not, also change OVERT to False
-#path to where spreadsheet is located
-INPUT_PATH = 'sample_data' 
-#name of spreadsheet file. 
+INPUT_PATH = 'C:/Users/N.S/Desktop/sample_data' 
 INPUT_FILE = 'input_sample1.csv'
-#INPUT_FILE = 'input_sample3.xlsx'
-#name of file with scanner metadata
-SCANNER_FILE = 'ctscan_sample1.csv'
-#name of final output spreadsheet file.
-#note no file ending. Will write to .xlsx
-OUTPUT_FILE = 'MSBIW_test' 
+'
+
 #%% import published dependencies 
 #import modules to make everything work. 
 #import time #for log_data.py
@@ -42,28 +33,22 @@ import os #to check if files exist
 #from log_data import log_debug 
 #MyLogger = log_debug(LOG_FILENAME)
 #ErrorMessage = None
-#%% check proposed files
-print('Checking to make sure paths are set.')
-ProposedIn1 = INPUT_PATH + '/' + INPUT_FILE
-print('File with specimen numbers: ' + ProposedIn1)
-if os.path.exists(ProposedIn1) == True:
-    print("Check 1 passed. Specimen number input file exists.")
-else:
-    sys.exit("No specimen number input file found. Change INPUT_FILE in main_mbc.py")
-ProposedIn2 = INPUT_PATH + '/' + SCANNER_FILE
-print('File with CT scan metadata: ' + ProposedIn2)
-if os.path.exists(ProposedIn2) == True:
-    print("Check 2 passed. CT scan metadata input file exists.")
-else:
-    sys.exit("No CT scan metadata input file found. Change SCANNER_FILE in main_mbc.py")
-ProposedOut = INPUT_PATH + '/' + OUTPUT_FILE + '.xlsx'
-print('Proposed Output File: ' + ProposedOut)
-if os.path.exists(ProposedOut) == True: #check to make sure the folder exists
-	Continue = ('File already exists. Do you want to overwrite it? [y/n]')
-if Continue == 'y':
-    print("Okay. Onward.")
-if Continue == 'n':
-    sys.exit("Please change OUTPUT_FILE in main_mbc.py to a new file name.")
+##%% check proposed files
+#print('Checking to make sure paths are set.')
+#ProposedIn1 = INPUT_PATH + '/' + INPUT_FILE
+#print('File with specimen numbers: ' + ProposedIn1)
+#if os.path.exists(ProposedIn1) == True:
+#    print("Check 1 passed. Specimen number input file exists.")
+#else:
+#    sys.exit("No specimen number input file found. Change INPUT_FILE in main_mbc.py")
+#ProposedOut = INPUT_PATH + '/' + OUTPUT_FILE + '.xlsx'
+#print('Proposed Output File: ' + ProposedOut)
+#if os.path.exists(ProposedOut) == True: #check to make sure the folder exists
+#	Continue = ('File already exists. Do you want to overwrite it? [y/n]')
+#if Continue == 'y':
+#    print("Okay. Onward.")
+#if Continue == 'n':
+#    sys.exit("Please change OUTPUT_FILE in main_mbc.py to a new file name.")
 #%% #Start. Get specimen numbers. 
 #MyLogger.debug('Starting specimen name input.')
 print('Starting specimen name input.')
@@ -131,7 +116,7 @@ if Guess == 'n':
 #for each, pull the Occurrence IDs.
 SpecimenDf = qi.make_occurrence_df(CollectionsChoice,SpecimensSplit,InstituteCol,CatalogCol)
 #%% Grant reporting
-oVert = input("Is this upload part of the oVert TCN grant? [y/n]")
+#oVert was user input earlier.
 if oVert == 'y': 
     import grant_reporting as ggr
     GrantText = ggr.generate_grant_report()
@@ -144,9 +129,11 @@ CopyPerm = mp.choose_copyright_permission()
 MediaPol = mp.choose_media_policy()
 #%% #Element
 #in the sample data, this info is in two columns: "body scan" and "close-up scan"
-#one option: ask the user if all specimens are represented by whole body scans only (no additional scans), then let them choose:
-#0: yes, 1: no, 2: this information is in the input spreadsheet. check it.
-#if 0: element = whole body
+#all oVert scans will at least have whole body
+if oVert = 'y':
+    WholeBody = input("Are any of the scans close-ups (of the head)? [y/n]")
+    if WholeBody = 'y':
+        #figure out how to delimit which scans are close-ups
 #if 1: ask: are all specimens the same element? [y/n]
     # if y: type anatomical element
     #if n: choose column containing element description
