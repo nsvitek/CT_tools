@@ -1,60 +1,58 @@
 #! /bin/env python
-### script to extract and organize CT scan settings from a .pca file
+# -*- coding: utf-8 -*-
+"""
+Script extracts and organizes CT scan settings from a .pca file.
 
+In future, hope to refactor and allow extraction from other CT file types.
 
 ### FUTURE NOTE: Is "[AutoScO] \n Active=1" the part where it specifies auto scan optimization?
+
+"""
+
 #from __future__ import print_function
-import logging, time, os, re, csv
+import os, re, csv
+#import logging, time #for logging
 
 # start log for troubleshooting 
 # logging.basicConfig(level=logging.INFO,filename='CT_extract-settings'+time.strftime('%Y-%m-%d')+'.log',filemode='a')
-
-# first, user decides if data should be drawn from a single file or all files in a folder.
-user_input = raw_input('Do you want to extract from a single file or all files in a directory? [single/all] ')
-if user_input == 'single':
-	InputFolder = False
-elif user_input == 'all':
-	InputFolder = True
-else:
-	print('I do not understand. Please try again.')
+#%% User Configuration. ######################################################
+#User sets each of these variables in ALL CAPS
+#Defaults are set for a batch extract of all .pca files in a folder
+#Do you want to extract from a single file or all files in a directory?
+#If single file, SEARCH_A_FOLDER = False
+SEARCH_ALL_FILES = True
 
 # user enters path of folder containing files, or individual file
-path_input = ""
-path_input = raw_input("Enter the path of your folder or file. Don't use quotes, just enter the path.")
+INPUT_PATH = "C:/path/to/files"
+#INPUT_PATH = "C:/path/to/files/CT_scan.pca"
 
+# ask the user for an output file name
+OUTPUT_NAME = "ctscan_metadata"
+
+#%% End User Configuration. ##################################################
+#%% Start running script. ####################################################
 # check to make sure paths exist, that files are there.
-if InputFolder == True:
-	if os.path.isdir(path_input): #check to make sure the folder exists
+if SEARCH_ALL_FILES == True:
+	if os.path.isdir(INPUT_PATH): #check to make sure the folder exists
 		print('Path found. Good start')
 		FileNames = [] #make a list of the pca files in the folder
-		for root, dirs, files in os.walk(path_input):
+		for root, dirs, files in os.walk(INPUT_PATH):
 			for file in files:
 				if file.endswith(".pca"):
 					FileNames.append(os.path.join(root, file))
 		print('Here are the files found in this directory:')
 		for file in FileNames: #list those files so the user can check to see if these are the files they're looking for
 			print(file)
-		user_input = raw_input('Is the file ready to be converted? [y/n] ')
-		if user_input == 'n':
-			print('Okay. Fix it then try the script again.')
-			quit()
-		elif user_input == 'y':
-			print('Good. Onward.')
-
 	else:
 		print('Path not found. Try again.')
 
-if InputFolder == False:
-	if os.path.exists(path_input):
+if SEARCH_ALL_FILES == False:
+	if os.path.exists(INPUT_PATH):
 		print('Path found. Good start')
-		FileNames = [path_input]
+		FileNames = [INPUT_PATH]
 	else:
 		print('Path not found. Try again.')
 
-# ask the user for an output file name
-path_output = ""
-path_output = raw_input("Enter the filename for your results (don't include the file ending).")
-		
 # write the header for values
 ColumnNames = ['file_name','X_voxel_size_mm','Y_voxel_size_mm','Z_voxel_size_mm','voltage_kv','amperage_ua','watts','exposure_time','filter','projections','frame_averaging']
 
@@ -126,10 +124,9 @@ for filename in FileNames:
 	Results[i] = RowEntry
 	i = i+1
 	# print(RowEntry)
-	
 
 # write a csv with results
-with open(path_output+'.csv','w') as CSVFile:
+with open(OUTPUT_NAME+'.csv','w') as CSVFile:
 	DataWriter = csv.writer(CSVFile)
 	for i in range(0,len(Results)):
 		DataWriter.writerow(Results[i])

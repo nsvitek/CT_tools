@@ -1,9 +1,9 @@
 #! /bin/env python
 """ 
-Starting point for the user to convert data to Morphosource batch upload spreadsheet.
+Main point of code execution. Most other files are imported to here. 
 
 Quick Start:
-    1. Change the variables in ALL CAPS to your particular file names for a job
+    1. Change the variables in ALL CAPS in the user_configuration script to your particular file names for a job
     2. Open the program Anaconda Prompt
     3. navigate to the location of the code location by typing 'cd C:\Path\to\morphosource_batch_convert'
     4. type 'python main_mbc.py'
@@ -13,20 +13,21 @@ Dependencies: pandas, idigbio, re, sys, os
 To install dependencies: recommend 'conda install pandas' and 'pip install idigbio' in anaconda
 re, sys, os should be native
 
-note: Assumptions and options for future code expansion are hidden in the imported files. Check 'em out.
+Other Notes:
+This code is currently written for samples from a single collection and single institution.
+If you have multi-collection uploads and do not want to break into multiple uploads, open an Issue on GitHub
 """
-INPUT_PATH = 'C:/Users/N.S/Desktop/sample_data' 
-INPUT_FILE = 'input_sample1.csv'
-'
-
-#%% import published dependencies 
-#import modules to make everything work. 
+#%% import dependencies 
 #import time #for log_data.py
 import pandas as pd #for input_specimens.py
 import idigbio #for query_idigbio.py
 import sys #for exiting if there's a problem
 import os #to check if files exist
-#import re #for later, if need to split undelimited specimen number strings
+import re #for stripping file endings, etc.
+
+import user_configuration as uc
+import input_specimens as inspec
+
 #%% log file. Shut off for now. 
 ##Name puts log file in "logs" folder labelled with the date. 
 #LOG_FILENAME = 'logs/log-'+time.strftime('%Y-%m-%d')+'.log' #-%H-%M for hour and minute
@@ -52,50 +53,42 @@ import os #to check if files exist
 #%% #Start. Get specimen numbers. 
 #MyLogger.debug('Starting specimen name input.')
 print('Starting specimen name input.')
-import input_specimens as inspec
 
-UserInputRaw = inspec.read_user_input(INPUT_PATH, INPUT_FILE)
-### ! Future: use debug log to check here that file was able to be read properly
-#if (ErrorMessage != None): #write error if wrong file ending.
-#    MyLogger.error(ErrorMessage)
-#    ErrorMessage = None
-
-# pull raw specimen numbers
-SpecimensRaw = inspec.read_catalog_numbers(UserInputRaw)
+if UPLOAD_FOLDER is not None:
+    UserInputRaw = os.listdir(INPUT_PATH + '/' + UPLOAD_FOLDER)
+    ZipNames = []
+    for file in UserInputRaw:
+        file_parts = re.match('(^.*)\.(.*)$',file) #get file ending
+        if file_parts.group(2) == "zip":
+            ZipNames.append(file_parts.group(1))
+    SpecimensRaw = pd.Series(ZipNames)
+if UPLOAD_FOLDER is None and INPUT_DF is not None:
+    UserInputRaw = inspec.read_user_input(INPUT_PATH, INPUT_DF)
+    SpecimensRaw = UserInputRaw[,SpecimenName]
+else:
+    sys.exit("No file names. Please set either UPLOAD_FOLDER or INPUT_DF.") 
 
 #break up the catalogue number into parts
-SpecimensSplit = SpecimensRaw.str.split('[ \-\_]+',expand=True)
+SpecimensSplit = SpecimensRaw.str.split(DELIMITER + '+',expand=True)
+print("File names split as follows:")
 print(SpecimensSplit)
-### ! Future: Figure out a solution for what to do if institution and number not delimited
-#if SEPARATOR == True:
+#if DELIMITER is not None:
 #    SpecimensSplit = SpecimensRaw.str.split('[ \-\_]+',expand=True)
-#if SEPARATOR == False:
+#if DELIMITER is None:
 #    ### ! Future: do more than print a note. Actually write a solution
-#    #re.split('(\d+)',specimens_raw[2])
-#    sys.exit('No delimiter provided between collection code and catalog number. Stop now.')
-### ! Future: use debug log to check to see that column was found, string properly split.
-    
-InstituteCol = int(input("Select the column number containing institution codes:")) #make integer
-CatalogCol = int(input("Select the column number containing catalog numbers:")) #make integer
 
-#check the whole batch of specimens for some sort of consistency. More than one collection?
-Institutions = set(SpecimensSplit.iloc[:,InstituteCol])
-if len(Institutions) > 1:
-     #MyLogger.debug(f'Multiple institution codes found: {Institutions}')
-     sys.exit('Warning: More than one institution or collection in this spreadsheet!')
-     ### ! Future: actually do something, don't just print a note. 
 #%% check for multiple collections
-MultipleCollections = input("Does this batch of specimens sample multiple collections? [y/n]")
-if MultipleCollections == 'n':
-    print("Okay, just checking.")
-if MultipleCollections == 'y':
-    print("This code is currently written for samples from a single collection and single institution.")
-    sys.exit("Please subdivide your sample into single-collection, single-institution sets, then try again.")
-    ### ! Future: add in this feature
+#MultipleCollections = input("Does this batch of specimens sample multiple collections? [y/n]")
+#if MultipleCollections == 'n':
+#    print("Okay, just checking.")
+#if MultipleCollections == 'y':
+#    print("")
+#    sys.exit("")
+#    ### ! Future: add in the option of searching for a collection each time via a match
 #%% query idigbio
-print('Starting iDigBio queries to find correct collection code.')
+print('Starting iDigBio queries to find occurrence IDs.')
 import query_idigbio as qi
-PossibleSpecimens = qi.find_options(list(Institutions)[0], SpecimensSplit.iloc[0,CatalogCol])
+PossibleSpecimens = qi.find_options(list(Institutions)[0], SpecimensSplit.iloc[0,SEGMENT_NUMBER])
 PossibleCollections = qi.collections_options(PossibleSpecimens)
 print('Here are possible collection codes based on the first specimen number:')
 for i in PossibleCollections:
@@ -114,14 +107,14 @@ if Guess == 'n':
     CollectionsChoice = qi.user_choose_collection(PossibleCollections)
   
 #for each, pull the Occurrence IDs.
-SpecimenDf = qi.make_occurrence_df(CollectionsChoice,SpecimensSplit,InstituteCol,CatalogCol)
+SpecimenDf = qi.make_occurrence_df(CollectionsChoice,SpecimensSplit,SEGMENT_MUSEUM,SEGMENT_NUMBER)
 #%% Grant reporting
 #oVert was user input earlier.
 if oVert == 'y': 
     import grant_reporting as ggr
     GrantText = ggr.generate_grant_report()
 if oVert == 'n':
-    Granttext = input("Please type in funding sources:")
+    Granttext = FUNDING_SOURCE
 #%% Copyright policy
 import media_policies as mp
 Provider = input("Please type the name of the copyright holder (often an institution):")
@@ -130,18 +123,9 @@ MediaPol = mp.choose_media_policy()
 #%% #Element
 #in the sample data, this info is in two columns: "body scan" and "close-up scan"
 #all oVert scans will at least have whole body
-if oVert = 'y':
-    WholeBody = input("Are any of the scans close-ups (of the head)? [y/n]")
-    if WholeBody = 'y':
-        #figure out how to delimit which scans are close-ups
-#if 1: ask: are all specimens the same element? [y/n]
-    # if y: type anatomical element
-    #if n: choose column containing element description
-#if 2: Is there a column for whether or not a specimen has a whole-body scan?:
-    #if y, choose column:
-    #Is there a column for other elements scanned (ex: close-ups, head-only, individual element descriptions)
-    #if y, choose column
-    #if n, 'you have run out of options. Go back and try again, or skip element'
+
+#How to tell what has a close-up and what doesn't? Should be a suffix name. Probably most reliable way.
+
 
 #%%how to optimally link up scan settings?
 
