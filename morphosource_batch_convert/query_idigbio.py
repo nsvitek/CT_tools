@@ -1,7 +1,7 @@
 #! /bin/env python
 """ get information from iDigBio API """
-import idigbio #for query_idigbio.py
-import pandas as pd
+#import idigbio #for query_idigbio.py
+#import pandas as pd
 
 def find_options(InstitutionCode,CatalogNumber):
     #for now, using only the first specimen to find correct collection. 

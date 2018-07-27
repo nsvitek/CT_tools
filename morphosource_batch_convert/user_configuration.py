@@ -17,6 +17,7 @@ INPUT_PATH = 'C:/Users/N.S/Desktop/sample_data'
 
 #The name of the folder containing files to batch upload.
 UPLOAD_FOLDER = 'sample_ctscans' #if input path is the folder you want
+#UPLOAD_FOLDER = None
 
 #The rest of your metadata should come from either a series of CT metadata files
     #or a spreadsheet, but not both. If you have both, then integrate them into 
@@ -107,6 +108,7 @@ DELIMITER = '[\_\- ]'
 #After a name is broken up by the delimiter, set which segment corresponds to which part.
 #The count begins at 0, so indicate the first segment with 0, the second segment with 1, etc.
 SEGMENT_MUSEUM = 0
+SEGMENT_COLLECTION = 1
 SEGMENT_NUMBER = 2
 SEGMENT_DESCRIPTION = None
 SEGMENT_CLOSEUP = 3

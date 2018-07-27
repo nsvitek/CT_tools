@@ -2,7 +2,7 @@
 """
 Copyright information.
 """
-def choose_copyright_permission():
+def choose_copyright_permission(PermissionChoice):
     """ uses recommended permissions settings for oVert TCN """
     CopyrightPermission = ["Copyright permission not set",
     "Person loading media owns copyright and grants permission for use of media on MorphoSource",
@@ -10,16 +10,9 @@ def choose_copyright_permission():
     "Permission pending",
     "Copyright expired or work otherwise in public domain",
     "Copyright permission not yet requested"]
-    print()
-    print()
-    print()
-    print("### Copyright Permission Options:")
-    for i in range(len(CopyrightPermission)):
-        print(str(i) + ": " + CopyrightPermission[i])
-    PermissionChoice = input("Select copyright permission (often choice 2):")
     return CopyrightPermission[int(PermissionChoice)]
 
-def choose_media_policy():
+def choose_media_policy(PolicyChoice):
     """ uses recommended permissions settings for oVert TCN """
     MediaPolicy = ["Media reuse policy not set",
     "CC0 - relinquish copyright",
@@ -31,11 +24,4 @@ def choose_media_policy():
     "Attribution-NonCommercial-NoDerivs CC BY-NC-ND - reuse noncommerical no changes",
     "Media released for onetime use, no reuse without permission",
     "Unknown - Will set before project publication"]
-    print()
-    print()
-    print()
-    print("### Media Policy Options:")
-    for i in range(len(MediaPolicy)):
-        print(str(i) + ": " + MediaPolicy[i])
-    PermissionChoice = input("Select media policy (oVert prefers 5, but check with your institution):")
     return MediaPolicy[int(PermissionChoice)]
