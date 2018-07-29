@@ -24,4 +24,4 @@ def choose_media_policy(PolicyChoice):
     "Attribution-NonCommercial-NoDerivs CC BY-NC-ND - reuse noncommerical no changes",
     "Media released for onetime use, no reuse without permission",
     "Unknown - Will set before project publication"]
-    return MediaPolicy[int(PermissionChoice)]
+    return MediaPolicy[int(PolicyChoice)]

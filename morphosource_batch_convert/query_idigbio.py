@@ -1,7 +1,7 @@
 #! /bin/env python
 """ get information from iDigBio API """
-#import idigbio #for query_idigbio.py
-#import pandas as pd
+import idigbio #for query_idigbio.py
+import pandas as pd
 
 def find_options(InstitutionCode,CatalogNumber):
     #for now, using only the first specimen to find correct collection. 
@@ -32,10 +32,6 @@ def genera_options(MyRecordList):
 
 def choose_genus_column(UserInputRaw):
     """pull genus from user-input dataframe to use in making best guess of collection code."""
-    print()
-    print()
-    print()
-    print("### Genus Column Options")
     for i in range(len(UserInputRaw.columns)):
         print(str(i) + ": " + UserInputRaw.columns[i])
     print("999: No column for variable of interest")
@@ -51,9 +47,6 @@ def choose_genus_column(UserInputRaw):
 
 def user_choose_collection(PossibleCollections):
     """ User manually selects the correct collection code."""
-    print()
-    print()
-    print()
     for i in range(len(PossibleCollections)):
         print(str(i) + ": " + PossibleCollections[i])
     UserChoice = input("Choose the number of the correct collection:")

@@ -28,8 +28,8 @@ CT_METADATA_FOLDER = None
 
 #If your metadata are in a spreadsheet (.csv or .xlsx), put that file name here
 #INPUT_DF = 'input_sample1.csv'
-INPUT_DF = 'ctscan_sample1.csv'
-#INPUT_DF = None
+#INPUT_DF = 'ctscan_sample1.csv'
+INPUT_DF = None
 
 #name of final output spreadsheet file, assuming same location as input
 #note no file ending. Will write to .xlsx
@@ -151,7 +151,7 @@ NAME_FILTER = 'filter'
 #This section is one you will need if INPUT_DF = True and you want to map
     #variables that were not included in the CT metadata section.
     #Refer to input_sample1.csv for an example of how each default maps.
-NAME_SPECIMENS = 'file_name'
+NAME_SPECIMENS = 'Catalog number'
 #if you batch scanned, this is the column name containing the name of which batch a specimen is in
 NAME_BATCH = 'Batch'
 

@@ -1,7 +1,7 @@
 #! /bin/env python
 """This modules reads and parses a list of specimen names"""
-#import pandas as pd #for input_specimens.py
-#import re
+import pandas as pd #for input_specimens.py
+import re
 
 #%% set variables
 ### ! Future: allow user to choose to set all variables intitially or use interactive mode.
