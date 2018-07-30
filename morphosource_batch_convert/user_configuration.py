@@ -27,8 +27,8 @@ UPLOAD_FOLDER = 'sample_ctscans' #if input path is the folder you want
 CT_METADATA_FOLDER = None
 
 #If your metadata are in a spreadsheet (.csv or .xlsx), put that file name here
-#INPUT_DF = 'input_sample1.csv'
-INPUT_DF = 'ctscan_sample1.csv'
+INPUT_DF = 'input_sample1.csv'
+#INPUT_DF = 'ctscan_sample1.csv'
 #INPUT_DF = None
 
 #name of final output spreadsheet file, assuming same location as input
@@ -37,7 +37,7 @@ OUTPUT_FILE = 'MSBIW_test'
 
 #%% Media Permissions #########################################################
 #Name of the copyright holder. Also used as the entity granting permission.
-PROVIDER = "Florida Museum of Natural History"
+PROVIDER = "The Ministry of Silly Walks"
 
 #### Copyright Permission Options:
 #0: Copyright permission not set
@@ -60,13 +60,13 @@ COPY_PERMISSION = 2
 #7: Attribution-NonCommercial-NoDerivs CC BY-NC-ND - reuse noncommerical no changes
 #8: Media released for onetime use, no reuse without permission
 #9: Unknown - Will set before project publication
-MEDIA_POLICY = 3
+MEDIA_POLICY = 5
 #%% Fundamental setup choices #################################################
 #determine oVert now, as will set downstream choices.
 #oVert: Is this upload part of the oVert TCN grant? ['y'/'n']
 OVERT = 'y'
 #Batch: Are there batch scans in the upload? ['y'/'n']
-BATCH = 'n'
+BATCH = 'y'
 
 #Do you want to pull extra information to help try to match collection codes?
 #Default is False for sake of simplicity
@@ -95,7 +95,7 @@ IDIGBIO_MATCH = 'genus'
 #15: University of California-San Diego Scripps Inst of Oceanography
 #Choose either number corresponding to institute or type 'None'.
 GRANT_SCANNING_INSTITUTION = 5
-GRANT_SPECIMEN_PROVIDER = None
+GRANT_SPECIMEN_PROVIDER = 10
 
 #File name parsing: User needs to set how a file name will be parsed into a specimen
     #In oVert, the recommended file naming convention is:
@@ -120,10 +120,10 @@ SEGMENT_CLOSEUP = 3
 
 #Add additional CT settings that aren't always in raw output files:
 #Write the name of the scanning technician in quotes
-TECHNICIAN = 'First Last'
+TECHNICIAN = 'Ada Lovelace'
 
 #Write what wedge was use in scanning, if any, in quotes.
-WEDGE = None
+WEDGE = 'air'
 
 #If you include shading, flux, or geometric calibrations, respectively, change to True.
 CALIBRATION_SHADE = True
@@ -152,13 +152,20 @@ NAME_FILTER = 'filter'
     #variables that were not included in the CT metadata section.
     #Refer to input_sample1.csv for an example of how each default maps.
 NAME_SPECIMENS = 'file_name'
-#if you batch scanned, this is the column name containing the name of which batch a specimen is in
-NAME_BATCH = 'Batch'
-
 
 #If you want to use extra information to help match collection codes, 
     #what column in the spreadsheet contains the data to use for matching?
 NAME_MATCH = 'Genus'
+
+#%% Batch variables ###########################################################
+#if you batch scanned, then you must have a spreadsheet in INPUT_DF.
+    #Why? Because you need a key to match specimens to the batches they are a part of
+    #Make sure you mapped NAME_SPECIMENS above, too. 
+#this is the column name containing the name of which batch a specimen is in.
+NAME_BATCH = 'Batch'
+
+#If CT scan metadata is already in a spreadsheet (CT_METADATA_FOLDER = None), enter file name. 
+CT_METADATA_FILE = 'ctscan_sample1.csv'
 
 #%% If not oVert, you need to set these variables, too ########################
 #Enter any grant funding as a string in quotes

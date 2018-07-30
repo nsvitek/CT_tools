@@ -44,9 +44,13 @@ if uc.UPLOAD_FOLDER is not None:
     SpecimensRaw = pd.Series(ZipNames)
 if uc.INPUT_DF is not None:
     UserInputRaw = inspec.read_user_input(uc.INPUT_PATH, uc.INPUT_DF)
-    SpecimensRaw = UserInputRaw[uc.NAME_SPECIMENS]
+    SpecimensRawD = UserInputRaw[uc.NAME_SPECIMENS]
+    #If this is the only place with file names, give it it the standard object name [SpecimensRaw]
+    if uc.UPLOAD_FOLDER is None: 
+        SpecimensRaw = SpecimensRawD
+        
 if uc.UPLOAD_FOLDER is None and uc.INPUT_DF is None:
-    sys.exit("Error: No file names. Please set either UPLOAD_FOLDER or INPUT_DF.")
+    sys.exit("Error: No file names. Please set either UPLOAD_FOLDER.")
 #%% break up the catalogue number into parts ##################################
 #if DELIMITER is not None:
 SpecimensSplit = SpecimensRaw.str.split(uc.DELIMITER + '+', expand=True)
