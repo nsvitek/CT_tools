@@ -32,8 +32,68 @@ import input_specimens as inspec
 import query_idigbio as qi
 import media_policies as mp
 import format_to_write as ftw
-#%% #Start. Get specimen numbers. #############################################
-print('\nStarting specimen name input.')
+import temp_ct_pca as tcp
+#%% #Start. Get the files in. #################################################
+print('\nStarting file input.')
+#%% Scan metadata files########################################################
+#Users must have one input or the other, but not both. 
+if uc.CT_METADATA_FILE is not None and uc.CT_METADATA_FOLDER is not None:
+    sys.exit("Error: Cannot have both CT metadata folder and file. Edit user_configuration.")
+if uc.CT_METADATA_FILE is None and uc.CT_METADATA_FOLDER is None:
+    sys.exit("Error: No CT metadata. Please set either CT_METADATA_FOLDER or CT_METADATA_FILE.")
+#Folder option first.
+if uc.CT_METADATA_FOLDER is not None: #works for either batch or not
+    #run the extract settings script, modified temporarily
+    CTInputPath = uc.INPUT_PATH + '/' + uc.CT_METADATA_FOLDER
+    CTdf = tcp.ctmeta_from_raw_files(CTInputPath,uc.NAME_SCAN)
+    #set UserInputCT to none, in contrast to file option
+    UserInputCT = None
+#File option second.
+if uc.CT_METADATA_FOLDER is None and uc.CT_METADATA_FILE is not None:
+    #Read in file
+    CTdf = inspec.read_user_input(uc.INPUT_PATH, uc.CT_METADATA_FILE)
+    CTdf.index = CTdf[uc.NAME_SCAN]
+    #Standardize variable names
+    CTdf = CTdf.rename(columns={uc.NAME_VOXELX: 'X_voxel_size_mm'})
+    CTdf = CTdf.rename(columns={uc.NAME_VOXELY: 'Y_voxel_size_mm'})
+    CTdf = CTdf.rename(columns={uc.NAME_VOXELZ: 'Z_voxel_size_mm'})
+    CTdf = CTdf.rename(columns={uc.NAME_VOLTAGE: 'voltage_kv'})
+    CTdf = CTdf.rename(columns={uc.NAME_AMPERAGE: 'amperage_ua'})
+    CTdf = CTdf.rename(columns={uc.NAME_WATTS: 'watts'})
+    CTdf = CTdf.rename(columns={uc.NAME_EXPOSURE: 'exposure_time'})
+    CTdf = CTdf.rename(columns={uc.NAME_FILTER: 'filter'})
+    CTdf = CTdf.rename(columns={uc.NAME_PROJECTIONS: 'projections'})
+    CTdf = CTdf.rename(columns={uc.NAME_FRAME: 'frame_averaging'})
+   
+#%% Merge spreadsheets, if necessary #########################################
+if uc.OTHER_METADATA_FILE is not None:
+    UserInput = inspec.read_user_input(uc.INPUT_PATH, uc.OTHER_METADATA_FILE)
+    UserInputMatch = []
+    if uc.BATCH == True:
+        #merge on uc.NAME_BATCH and uc.NAME_SCAN. Should be exact match
+        for row1 in range(len(UserInput)):
+            for row2 in range(len(CTdf)):
+                if UserInput[uc.NAME_BATCH][row1] == CTdf[uc.NAME_SCAN][row2]:
+                    UserInputMatch.append(list(CTdf.iloc[row2,:]))
+    if uc.BATCH == False:
+        #merge on uc.NAME_SPECIMENS and uc.NAME_SCAN
+        for row1 in range(len(UserInput)):
+            for row2 in range(len(CTdf)):
+                if UserInput[uc.NAME_SPECIMENS][row1] == CTdf[uc.NAME_SCAN][row2]:
+                    UserInputMatch.append(list(CTdf.iloc[row2,:]))
+    if len(UserInputMatch) != len(UserInput):
+        sys.exit("Error: cannot completely match the two spreadsheets.")
+    #then turn UserInputMatch list into dataframe
+    CTdfMatch = pd.DataFrame(UserInputMatch, columns = CTdf.columns)
+    #merge two spreadsheets into CTdf
+    CTdf = pd.concat([UserInput,CTdfMatch],axis = 1)
+    CTdf.index = CTdf[uc.NAME_SPECIMENS]
+
+#%% file names in upload batch ################################################
+#The names of the files to upload. They're either in a folder or spreadsheet column
+if uc.UPLOAD_FOLDER is None and uc.NAME_FILE is None:
+    sys.exit("Error: No names of files to upload. Please set either UPLOAD_FOLDER or NAME_FILE.")
+#Folder option first
 if uc.UPLOAD_FOLDER is not None:
     FileNamesRaw = os.listdir(uc.INPUT_PATH + '/' + uc.UPLOAD_FOLDER)
     ZipNames = []
@@ -41,23 +101,31 @@ if uc.UPLOAD_FOLDER is not None:
         file_parts = re.match('(^.*)\.(.*)$', file) #get file ending
         if file_parts.group(2) == "zip":
             ZipNames.append(file_parts.group(1))
-    SpecimensRaw = pd.Series(ZipNames)
-if uc.INPUT_DF is not None:
-    UserInputRaw = inspec.read_user_input(uc.INPUT_PATH, uc.INPUT_DF)
-    SpecimensRawD = UserInputRaw[uc.NAME_SPECIMENS]
-    #If this is the only place with file names, give it it the standard object name [SpecimensRaw]
-    if uc.UPLOAD_FOLDER is None: 
-        SpecimensRaw = SpecimensRawD
-        
-if uc.UPLOAD_FOLDER is None and uc.INPUT_DF is None:
-    sys.exit("Error: No file names. Please set either UPLOAD_FOLDER.")
+#Spreadsheet option next
+if uc.UPLOAD_FOLDER is None and uc.FILE_NAME is not None:
+    CTdfReorder = CTdf
+    FileNamesRaw = CTdf[uc.FILE_NAME]
+    file_name_check = re.match('(^.*)\.(.*)$', FileNamesRaw[0]) #get file ending
+    if file_parts is None:
+        ZipNames = FileNamesRaw
+    if file_parts is not None:
+        ZipNames = []
+        for file in FileNamesRaw:
+            file_parts = re.match('(^.*)\.(.*)$', file) #get file ending
+            if file_parts.group(2) == "zip":
+                ZipNames.append(file_parts.group(1))
+#Either way, get column of specimen names
+SpecimensRaw = pd.Series(ZipNames)
+print("All files in. Starting processing.")
 #%% break up the catalogue number into parts ##################################
+print("Linking input by specimen name.")
+#split the specimen name so that individual pieces can be compared across input
 #if DELIMITER is not None:
 SpecimensSplit = SpecimensRaw.str.split(uc.DELIMITER + '+', expand=True)
+#if DELIMITER is None:
+#    ### ! Future: write a solution
 print("\nFile names split as follows:")
 print(SpecimensSplit)
-#if DELIMITER is None:
-#    ### ! Future: do more than print a note. Actually write a solution
 if uc.SEGMENT_MUSEUM is None or uc.SEGMENT_NUMBER is None:
     sys.exit('Institution code or specimen number missing. Check SEGMENT_MUSEUM, SEGMENT_NUMBER, or the specimen split pattern above.')
 Institutions = SpecimensSplit.iloc[:, uc.SEGMENT_MUSEUM]
@@ -66,14 +134,45 @@ if len(set(Institutions)) > 1:
     if Continue == 'n':
         sys.exit()
 SpecimenNumbers = SpecimensSplit.iloc[:, uc.SEGMENT_NUMBER]
-
+#look for optional collection designation
 if uc.SEGMENT_COLLECTION is not None:
     UserCollections = SpecimensSplit.iloc[:, uc.SEGMENT_COLLECTION]
+else:
+    UserCollections = None
+#look for optional descriptive notes
 if uc.SEGMENT_DESCRIPTION is not None:
     UserDescription = SpecimensSplit.iloc[:, uc.SEGMENT_DESCRIPTION]
-if uc.SEGMENT_CLOSEUP is not None:
-    Closeup = SpecimensSplit.iloc[:, uc.SEGMENT_CLOSEUP]
-
+else:
+    UserDescription = None
+#look for optional close-up scan designation
+if uc.SEGMENT_BODYPART is not None:
+    Closeup = SpecimensSplit.iloc[:, uc.SEGMENT_BODYPART]
+else:
+    Closeup = None
+#%% standardize entry order between file names and metadata ###################
+#if there are close-ups [i.e., multiple scans of same specimen], require exact match:
+if uc.SEGMENT_BODYPART is not None:
+   #re-sort CT metadata to match files for upload
+    CTdfReorder = CTdf.reindex(SpecimensRaw)               
+#if there are no closeups, then probably not multiple scans of one specimen so partial matching is okay
+#create a string concatenating matching elements of file names, with or without collections code:
+if uc.SEGMENT_BODYPART is None:
+    if uc.BATCH == True:
+        CTSplit = CTdf[uc.NAME_SPECIMENS].str.split(uc.DELIMITER + '+', expand=True)
+    if uc.BATCH == False:
+        CTSplit = CTdf[uc.NAME_SCAN].str.split(uc.DELIMITER + '+', expand=True)
+    if uc.SEGMENT_COLLECTION is None:
+        NamePartsSpec = Institutions + SpecimenNumbers
+        NamePartsCT = CTSplit.iloc[:,uc.SEGMENT_MUSEUM]  + CTSplit.iloc[:,uc.SEGMENT_NUMBER]
+    if uc.SEGMENT_COLLECTION is not None:
+        NamePartsSpec = Institutions + UserCollections + SpecimenNumbers
+        NamePartsCT = CTSplit.iloc[:,uc.SEGMENT_MUSEUM] + CTSplit.iloc[:,uc.SEGMENT_COLLECTION] + CTSplit.iloc[:,uc.SEGMENT_NUMBER]
+    #will need to change index of CT metadata for sorting
+    CTdf.index = NamePartsCT
+    #re-sort CT metadata to match files for upload
+    CTdfReorder = CTdf.reindex(NamePartsSpec)
+#change index back so that there aren't index duplicates downstream
+CTdfReorder.index = SpecimensRaw 
 #%% query idigbio #############################################################
 print('\nStarting iDigBio queries to find occurrence IDs.')
 PossibleSpecimens = qi.find_options(list(Institutions)[0], list(SpecimenNumbers)[0])
@@ -105,9 +204,9 @@ SpecimenDf = qi.make_occurrence_df(CollectionsChoice, SpecimensSplit, uc.SEGMENT
 #%% #Element ##################################################################
 #in the sample data, this info is in two columns: "body scan" and "close-up scan"
 #all oVert scans will at least have "whole body", and "not applicable" for "whole body" in side
-if uc.OVERT == 'y':
+if uc.OVERT == True:
     SideText = "not applicable"
-    if uc.SEGMENT_CLOSEUP is not None:
+    if uc.SEGMENT_BODYPART is not None:
         ElementText = []
         for i in Closeup:
             if i is None:
@@ -116,57 +215,10 @@ if uc.OVERT == 'y':
                 ElementText.append(i.lower())
     else:
         ElementText = None
-if uc.OVERT == 'n':
+if uc.OVERT == False:
     ElementText = UserInputRaw[uc.NAME_ELEMENT]
     SideText = UserInputRaw[uc.NAME_SIDE]
-#%% Grant reporting ###########################################################
-print('\nStarting policy input.')
-#oVert was user input earlier.
-if uc.OVERT == 'y': 
-    import grant_reporting as ggr
-    GrantText = ggr.generate_grant_report(uc.GRANT_SCANNING_INSTITUTION,uc.GRANT_SPECIMEN_PROVIDER)
-if uc.OVERT == 'n':
-    Granttext = uc.FUNDING_SOURCE
-#%% Copyright policy ##########################################################
-CopyPerm = mp.choose_copyright_permission(uc.COPY_PERMISSION)
-MediaPol = mp.choose_media_policy(uc.MEDIA_POLICY)
-#%% Scan metadata #############################################################
-print('\nStarting scan metadata input.')
-#first, get the metadata in one of two ways:
-if uc.CT_METADATA_FOLDER is not None:
-    #run the extract settings script, modified temporarily
-    import temp_ct_pca as tcp
-    CTInputPath = uc.INPUT_PATH + '/' + uc.CT_METADATA_FOLDER
-    Results = tcp.pull_pca(CTInputPath)
-    CTdf = pd.DataFrame(Results[1:], columns = Results[0])
-    CTdf.index = CTdf[uc.NAME_SCAN]
-if uc.CT_METADATA_FOLDER is None and uc.INPUT_DF is not None:
-    CTdf = UserInputRaw
-if uc.CT_METADATA_FOLDER is None and uc.INPUT_DF is None:
-    sys.exit("Error: No CT metadata. Please set either CT_METADATA_FOLDER or INPUT_DF.")
-
-#read the file names and match with the specimen names
-#if there are closeups [i.e., multiple scans of same specimen], exact match:
-if uc.SEGMENT_CLOSEUP is not None:
-   #re-sort CT metadata to match files for upload
-    CTdfReorder = CTdf.reindex(SpecimensRaw)               
-#if there are no closeups, then probably not multiple scans of one specimen so partial matching is okay
-#create a string concatenating matching elements of file names, with or without collections code:
-if uc.SEGMENT_CLOSEUP is None:
-    CTSplit = CTdf[uc.NAME_SCAN].str.split(uc.DELIMITER + '+', expand=True)
-    if uc.SEGMENT_COLLECTION is None:
-        NamePartsSpec = Institutions + SpecimenNumbers
-        NamePartsCT = CTSplit.iloc[:,uc.SEGMENT_MUSEUM]  + CTSplit.iloc[:,uc.SEGMENT_NUMBER]
-    if uc.SEGMENT_COLLECTION is not None:
-        NamePartsSpec = Institutions + UserCollections + SpecimenNumbers
-        NamePartsCT = CTSplit.iloc[:,uc.SEGMENT_MUSEUM] + CTSplit.iloc[:,uc.SEGMENT_COLLECTION] + CTSplit.iloc[:,uc.SEGMENT_NUMBER]
-    #will need to change index of CT metadata for sorting
-    CTdfReorder.index = NamePartsCT
-    #re-sort CT metadata to match files for upload
-    CTdfReorder = CTdfReorder.reindex(NamePartsSpec)
-#change index back so that there aren't index duplicates downstream
-CTdfReorder = CTdfReorder.reindex(SpecimensRaw) 
-
+#%% additional CT metadata ####################################################
 #add in additional info not necessarily included in CT metadata files
 if uc.TECHNICIAN is not None:
     CTdfReorder['technician'] = uc.TECHNICIAN
@@ -182,20 +234,18 @@ CTdfReorder['geom_calib'] = uc.CALIBRATION_GEOMETRIC
 if uc.CALIBRATION_DESCRIPTION is not None:
     CTdfReorder['calib_descrip'] = uc.CALIBRATION_DESCRIPTION
 else:
-    CTdfReorder['calib_descrip'] = None       
-       
-#Standardize variable names
-if uc.CT_METADATA_FOLDER is None and uc.INPUT_DF is not None:
-    CTdfReorder = CTdfReorder.rename(columns={uc.NAME_VOXELX: 'X_voxel_size_mm'})
-    CTdfReorder = CTdfReorder.rename(columns={uc.NAME_VOXELY: 'Y_voxel_size_mm'})
-    CTdfReorder = CTdfReorder.rename(columns={uc.NAME_VOXELZ: 'Z_voxel_size_mm'})
-    CTdfReorder = CTdfReorder.rename(columns={uc.NAME_VOLTAGE: 'voltage_kv'})
-    CTdfReorder = CTdfReorder.rename(columns={uc.NAME_AMPERAGE: 'amperage_ua'})
-    CTdfReorder = CTdfReorder.rename(columns={uc.NAME_WATTS: 'watts'})
-    CTdfReorder = CTdfReorder.rename(columns={uc.NAME_EXPOSURE: 'exposure_time'})
-    CTdfReorder = CTdfReorder.rename(columns={uc.NAME_FILTER: 'filter'})
-    CTdfReorder = CTdfReorder.rename(columns={uc.NAME_PROJECTIONS: 'projections'})
-    CTdfReorder = CTdfReorder.rename(columns={uc.NAME_FRAME: 'frame_averaging'})
+    CTdfReorder['calib_descrip'] = None 
+#%% Grant reporting ###########################################################
+print('\nStarting policy input.')
+#oVert was user input earlier.
+if uc.OVERT == True: 
+    import grant_reporting as ggr
+    GrantText = ggr.generate_grant_report(uc.GRANT_SCANNING_INSTITUTION,uc.GRANT_SPECIMEN_PROVIDER)
+if uc.OVERT == False:
+    Granttext = uc.FUNDING_SOURCE
+#%% Copyright policy ##########################################################
+CopyPerm = mp.choose_copyright_permission(uc.COPY_PERMISSION)
+MediaPol = mp.choose_media_policy(uc.MEDIA_POLICY)
 #%% get file names for first media object: zipped files of raw data ###########
 print('\nStarting file name input.')
 #ZipNames already has file names minus the '.zip', so add it back in

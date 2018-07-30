@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-
 Starting point for the user to convert data to Morphosource batch upload spreadsheet.
 
 As a user, you change any of the variables in ALL CAPS below to suit your needs.
@@ -9,35 +8,39 @@ There are sometimes workable alternative settings in the #comments.
 
 If you are not going to use a variable, don't leave it blank. Write 'None' instead.
    Example: If you have no spreadsheet of metadata, then:
-       INPUT_DF = None
+       OTHER_METADATA_FILE = None
 """
 #%% File Paths ################################################################
 #path to folder where all your inputs are stored
-INPUT_PATH = 'C:/Users/N.S/Desktop/sample_data' 
+INPUT_PATH = 'C:/cygwin/home/N.S/scripts/CT_tools/morphosource_batch_convert/sample_data' 
 
 #The name of the folder containing files to batch upload.
-UPLOAD_FOLDER = 'sample_ctscans' #if input path is the folder you want
+UPLOAD_FOLDER = 'sample_batch'
 #UPLOAD_FOLDER = None
 
 #The rest of your metadata should come from either a series of CT metadata files
-    #or a spreadsheet, but not both. If you have both, then integrate them into 
-    #a single spreadsheet. See [integration code file name here. Future work.]
+    #or a spreadsheet.
 #The name of the folder containing CT metadata files.
 #CT_METADATA_FOLDER = 'sample_ctscans'
 CT_METADATA_FOLDER = None
 
-#If your metadata are in a spreadsheet (.csv or .xlsx), put that file name here
-#INPUT_DF = 'input_sample1.csv'
-INPUT_DF = 'ctscan_sample1.csv'
-#INPUT_DF = None
-
-#name of final output spreadsheet file, assuming same location as input
+#If CT scan metadata is already in a spreadsheet, enter file name. 
+    #Don't forget to set CT_METADATA_FOLDER = None in this case.
+CT_METADATA_FILE = 'ctscan_batch_sample1.csv'
+#If have additional metadata in a separate spreadsheet (.csv or .xlsx), put that file name here
+OTHER_METADATA_FILE = 'input_sample1.csv'
+#OTHER_METADATA_FILE = None
+#Spreadsheet file options:
+    #if you have a single spreadsheet with both CT metadata and other data,
+    #then use only CT_METADATA_FILE and set OTHER_METADATA_FILE to None.
+    
+#Name of final output spreadsheet file, assuming same location as input
 #note no file ending. Will write to .xlsx
 OUTPUT_FILE = 'MSBIW_test'
 
 #%% Media Permissions #########################################################
 #Name of the copyright holder. Also used as the entity granting permission.
-PROVIDER = "Florida Museum of Natural History"
+PROVIDER = "The Ministry of Silly Walks"
 
 #### Copyright Permission Options:
 #0: Copyright permission not set
@@ -60,13 +63,13 @@ COPY_PERMISSION = 2
 #7: Attribution-NonCommercial-NoDerivs CC BY-NC-ND - reuse noncommerical no changes
 #8: Media released for onetime use, no reuse without permission
 #9: Unknown - Will set before project publication
-MEDIA_POLICY = 3
+MEDIA_POLICY = 5
 #%% Fundamental setup choices #################################################
 #determine oVert now, as will set downstream choices.
 #oVert: Is this upload part of the oVert TCN grant? ['y'/'n']
-OVERT = 'y'
+OVERT = True
 #Batch: Are there batch scans in the upload? ['y'/'n']
-BATCH = 'n'
+BATCH = True
 
 #Do you want to pull extra information to help try to match collection codes?
 #Default is False for sake of simplicity
@@ -95,7 +98,7 @@ IDIGBIO_MATCH = 'genus'
 #15: University of California-San Diego Scripps Inst of Oceanography
 #Choose either number corresponding to institute or type 'None'.
 GRANT_SCANNING_INSTITUTION = 5
-GRANT_SPECIMEN_PROVIDER = None
+GRANT_SPECIMEN_PROVIDER = 10
 
 #File name parsing: User needs to set how a file name will be parsed into a specimen
     #In oVert, the recommended file naming convention is:
@@ -108,10 +111,10 @@ DELIMITER = '[\_\- ]'
 #After a name is broken up by the delimiter, set which segment corresponds to which part.
 #The count begins at 0, so indicate the first segment with 0, the second segment with 1, etc.
 SEGMENT_MUSEUM = 0
-SEGMENT_COLLECTION = 1
+SEGMENT_COLLECTION = None
 SEGMENT_NUMBER = 2
 SEGMENT_DESCRIPTION = None
-SEGMENT_CLOSEUP = 3
+SEGMENT_BODYPART = None
 
 #%% CT metadata ###############################################################
 ##Are the CT metadata still in a series of raw CT output files, 
@@ -120,10 +123,10 @@ SEGMENT_CLOSEUP = 3
 
 #Add additional CT settings that aren't always in raw output files:
 #Write the name of the scanning technician in quotes
-TECHNICIAN = 'First Last'
+TECHNICIAN = 'Ada Lovelace'
 
 #Write what wedge was use in scanning, if any, in quotes.
-WEDGE = None
+WEDGE = 'air'
 
 #If you include shading, flux, or geometric calibrations, respectively, change to True.
 CALIBRATION_SHADE = True
@@ -151,14 +154,20 @@ NAME_FILTER = 'filter'
 #This section is one you will need if INPUT_DF = True and you want to map
     #variables that were not included in the CT metadata section.
     #Refer to input_sample1.csv for an example of how each default maps.
-NAME_SPECIMENS = 'file_name'
-#if you batch scanned, this is the column name containing the name of which batch a specimen is in
-NAME_BATCH = 'Batch'
-
+NAME_SPECIMENS = 'Catalog number'
 
 #If you want to use extra information to help match collection codes, 
     #what column in the spreadsheet contains the data to use for matching?
 NAME_MATCH = 'Genus'
+
+#%% Batch variables ###########################################################
+#if you batch scanned, then you must have a spreadsheet in INPUT_DF.
+    #Why? Because you need a key to match specimens to the batches they are a part of
+    #Make sure you mapped NAME_SPECIMENS above, too. 
+#this is the column name containing the name of which batch a specimen is in.
+NAME_BATCH = 'Batch'
+
+
 
 #%% If not oVert, you need to set these variables, too ########################
 #Enter any grant funding as a string in quotes
@@ -169,3 +178,5 @@ NAME_ELEMENT = None
 #Note: when populating this column, text options are:
 #Not Applicable [use for 'whole body'], Unknown, Left, Right, Midline
 NAME_SIDE = None
+#The column name containing the file names to be uploaded. It seems unlikely to see use.
+NAME_FILE = None

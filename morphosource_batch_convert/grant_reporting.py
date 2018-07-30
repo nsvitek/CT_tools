@@ -15,9 +15,9 @@ def generate_grant_report(GrantScan, GrantIn):
     GrantData = json.load(Jfile)['response']['award'] #Thank you Kevin Love. 
     Jfile.close()
     #make modifications for missing choices
-    if GrantScan == 5 or '5': #UF will always be cited as lead TCN, no need to cite twice
+    if GrantScan == 5 or GrantScan == '5': #UF will always be cited as lead TCN, no need to cite twice
         GrantScan = None
-    if GrantIn == 5 or '5': #UF will always be cited as lead TCN, no need to cite twice
+    if GrantIn == 5 or GrantScan =='5': #UF will always be cited as lead TCN, no need to cite twice
         GrantIn = None
     if GrantScan is None: #if first instituion missing, print only the second
         GrantScan = GrantIn

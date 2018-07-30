@@ -8,18 +8,8 @@ In future, hope to refactor and allow extraction from other CT file types.
 ### FUTURE NOTE: Is "[AutoScO] \n Active=1" the part where it specifies auto scan optimization?
 
 """
-
-#from __future__ import print_function
 import os, re, csv
-#import logging, time #for logging
-
-#%% User Configuration. ######################################################
-#User sets each of these variables in ALL CAPS
-#Defaults are set for a batch extract of all .pca files in a folder
-#Do you want to extract from a single file or all files in a directory?
-#If single file, SEARCH_A_FOLDER = False
-
-# user enters path of folder containing files, or individual file
+import pandas as pd
 
 def pull_pca(INPUT_PATH):
     # check to make sure paths exist, that files are there.
@@ -104,12 +94,8 @@ def pull_pca(INPUT_PATH):
     	i = i+1
     return Results
 
-
-# write a csv with results
-#with open(OUTPUT_NAME+'.csv','w') as CSVFile:
-#	DataWriter = csv.writer(CSVFile)
-#	for i in range(0,len(Results)):
-#		DataWriter.writerow(Results[i])
-#
-#CSVFile.close()
-
+def ctmeta_from_raw_files(CTInputPath,IndexColumn):
+     Results = pull_pca(CTInputPath)
+     CTdf = pd.DataFrame(Results[1:], columns = Results[0])
+     CTdf.index = CTdf[IndexColumn]
+     return CTdf
