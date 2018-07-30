@@ -1,7 +1,7 @@
 # Morphosource Batch Convert
 A collection of python scripts that (hopefully) streamline the batch uploading process in Morphosource
 
-The entry point for users is the `main_mbc.py` file. At the top of the file are path variables for users to set. Everything else in the script is run interactively.
+The entry point for users is the `user_configuration.py` file.
 
 ### Quick Start
 
