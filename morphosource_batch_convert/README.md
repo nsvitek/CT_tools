@@ -9,7 +9,7 @@ The code depends on the packages `pandas` and `idigbio`. See more on installing 
 ## Quick Start
 
 1. Open `user_configuration.py` in a text editor and change the variables in ALL CAPS to the correct settings for your job.
-2. Open a terminal window on a machine with Python installed (for more on installing python, see guide [here](https://realpython.com/installing-python/) or, if on windows, consider the [Anaconda distribution](https://docs.anaconda.com/anaconda/install/windows)).
+2. Open a terminal window on a machine with Python installed (for more on installing Python, see guide [here](https://realpython.com/installing-python/) or, if on Windows, consider the [Anaconda distribution](https://docs.anaconda.com/anaconda/install/windows)).
 3. Navigate to the location of the code by typing `cd C:\Path\to\morphosource_batch_convert`
 4. Type `python main_mbc.py`
 
@@ -58,7 +58,7 @@ If the scans are a part of the oVert grant, there is also a section (`oVert-spec
 #### Example configurations
 See `sample_UF_user_configuration.py` and the dummy files in `sample_data` for an example setup that works without spreadsheets. See `sample_batch_user_configuration.py` and associated dummy files in `sample_data` for an example of a setup with batch scans, as well as how to work with additional spreadsheets.
 
-####Output 
+#### Output 
 The script will write an .xlsx file formatted for direct use in Morphosource batch uploads.  
 
  The code was developed and run within the Anaconda framework using Python 3.6.5. Code development is funded by the oVert TCN, NSF DBI-1701714. 
