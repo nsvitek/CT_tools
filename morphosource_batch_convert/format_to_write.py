@@ -18,7 +18,10 @@ def read_mbs_worksheet(Rows):
 #SpecimensRaw is an object, a column of specimen numbers (ex: UF 12345, UF 23456): 
 def fill_description(Worksheet, SpecimensRaw):
     Description = 'microCT volume and derivatives'
-    Worksheet.iloc[3:,0] = Description 
+    Description2 = SpecimensRaw
+    for i in range(len(SpecimensRaw)):
+        Description2[i] = Description2.values + f' of {SpecimensRaw[i]}'
+    Worksheet.iloc[3:,0] = Description2.values
     Worksheet.iloc[3:,46] = Description #46 = Media group description
     return Worksheet
 #%% Fill in IDs, knowing that the occurrence ID trumps all.

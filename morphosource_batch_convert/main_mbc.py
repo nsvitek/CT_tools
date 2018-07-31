@@ -139,11 +139,6 @@ if uc.SEGMENT_COLLECTION is not None:
     UserCollections = SpecimensSplit.iloc[:, uc.SEGMENT_COLLECTION]
 else:
     UserCollections = None
-#look for optional descriptive notes
-if uc.SEGMENT_DESCRIPTION is not None:
-    UserDescription = SpecimensSplit.iloc[:, uc.SEGMENT_DESCRIPTION]
-else:
-    UserDescription = None
 #look for optional close-up scan designation
 if uc.SEGMENT_BODYPART is not None:
     Closeup = SpecimensSplit.iloc[:, uc.SEGMENT_BODYPART]
@@ -247,6 +242,12 @@ if uc.OVERT == False:
 CopyPerm = mp.choose_copyright_permission(uc.COPY_PERMISSION)
 MediaPol = mp.choose_media_policy(uc.MEDIA_POLICY)
 #%% get file names for first media object: zipped files of raw data ###########
+print('\nStarting file name input.')
+#ZipNames already has file names minus the '.zip', so add it back in
+ZipFileNames = [s + '.zip' for s in ZipNames] 
+#given that these are zipped tiff stacks or similar, no preview file
+PreviewNames1 = None
+#%% get file names for second media object: surface file ###########
 print('\nStarting file name input.')
 #ZipNames already has file names minus the '.zip', so add it back in
 ZipFileNames = [s + '.zip' for s in ZipNames] 

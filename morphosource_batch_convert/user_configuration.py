@@ -34,11 +34,52 @@ OTHER_METADATA_FILE = None
 #Spreadsheet file options:
     #if you have a single spreadsheet with both CT metadata and other data,
     #then use only CT_METADATA_FILE and set OTHER_METADATA_FILE to None.
-    
+   
 #Name of final output spreadsheet file, assuming same location as input
-#note no file ending. Will write to .xlsx
+    #note no file ending. Will write to .xlsx
 OUTPUT_FILE = 'MSBIW_test'
-
+#%% Fundamental setup choices #################################################
+#determine oVert now, as will set downstream choices.
+#oVert: Is this upload part of the oVert TCN grant?
+OVERT = True
+#Batch: Are there batch scans in the upload?
+BATCH = False
+#%% File name parsing #########################################################
+#User needs to set how a file name will be parsed into a specimen
+    #In oVert, the recommended file naming convention is:
+    #MUSEUM-COLLLECTION-NUMBER_notes, where MUSEUM = museum code, COLLECTION = collections code,
+    #NUMBER = specimen number, and notes might be "head" or "skull" for close-up
+    #or a genus name, or some other note. Notes are optional. 
+#Set how a name will be broken into pieces. Default is space, dash, or underscore
+    #Note that dash and underscore both need a backslash in front of them (ex: '\_')
+DELIMITER = '[\_\- ]' 
+#After a name is broken up by the delimiter, set which segment corresponds to which part.
+#The count begins at 0, so indicate the first segment with 0, the second segment with 1, etc.
+SEGMENT_MUSEUM = 0
+SEGMENT_COLLECTION = 1
+SEGMENT_NUMBER = 2
+SEGMENT_BODYPART = 3
+#%% oVert-specific settings ###################################################
+#### TCN Institutions
+#0: University of Washington
+#1: Field Museum of Natural History
+#2: Harvard University
+#3: University of California-Berkeley
+#4: Louisiana State University & Agricultural and Mechanical College
+#5: University of Florida
+#6: University of Texas at Austin
+#7: University of Kansas Center for Research Inc
+#8: California Academy of Sciences
+#9: Cornell University
+#10: University of Michigan Ann Arbor
+#11: Texas A&M AgriLife Research
+#12: College of William & Mary Virginia Institute of Marine Science
+#13: Academy of Natural Sciences Philadelphia
+#14: Yale University
+#15: University of California-San Diego Scripps Inst of Oceanography
+#Choose either number corresponding to institute or type 'None'.
+GRANT_SCANNING_INSTITUTION = 5
+GRANT_SPECIMEN_PROVIDER = None
 #%% Media Permissions #########################################################
 #Name of the copyright holder. Also used as the entity granting permission.
 PROVIDER = "Florida Museum of Natural History"
@@ -65,57 +106,6 @@ COPY_PERMISSION = 2
 #8: Media released for onetime use, no reuse without permission
 #9: Unknown - Will set before project publication
 MEDIA_POLICY = 3
-#%% Fundamental setup choices #################################################
-#determine oVert now, as will set downstream choices.
-#oVert: Is this upload part of the oVert TCN grant? ['y'/'n']
-OVERT = True
-#Batch: Are there batch scans in the upload? ['y'/'n']
-BATCH = False
-
-#Do you want to pull extra information to help try to match collection codes?
-#Default is False for sake of simplicity
-MATCH_EXTRA = False 
-#possible index terms to match by: 
-#'genus'
-IDIGBIO_MATCH = 'genus'
-
-#%% oVert-specific settings ###################################################
-#### TCN Institutions
-#0: University of Washington
-#1: Field Museum of Natural History
-#2: Harvard University
-#3: University of California-Berkeley
-#4: Louisiana State University & Agricultural and Mechanical College
-#5: University of Florida
-#6: University of Texas at Austin
-#7: University of Kansas Center for Research Inc
-#8: California Academy of Sciences
-#9: Cornell University
-#10: University of Michigan Ann Arbor
-#11: Texas A&M AgriLife Research
-#12: College of William & Mary Virginia Institute of Marine Science
-#13: Academy of Natural Sciences Philadelphia
-#14: Yale University
-#15: University of California-San Diego Scripps Inst of Oceanography
-#Choose either number corresponding to institute or type 'None'.
-GRANT_SCANNING_INSTITUTION = 5
-GRANT_SPECIMEN_PROVIDER = None
-
-#File name parsing: User needs to set how a file name will be parsed into a specimen
-    #In oVert, the recommended file naming convention is:
-    #MUSEUM-COLLLECTION-NUMBER_notes, where MUSEUM = museum code, COLLECTION = collections code,
-    #NUMBER = specimen number, and notes might be "head" or "skull" for close-up
-    #or a genus name, or some other note. Notes are optional. 
-#Set how a name will be broken into pieces. Default is space, dash, or underscore
-    #Note that dash and underscore both need a backslash in front of them (ex: '\_')
-DELIMITER = '[\_\- ]' 
-#After a name is broken up by the delimiter, set which segment corresponds to which part.
-#The count begins at 0, so indicate the first segment with 0, the second segment with 1, etc.
-SEGMENT_MUSEUM = 0
-SEGMENT_COLLECTION = 1
-SEGMENT_NUMBER = 2
-SEGMENT_DESCRIPTION = None
-SEGMENT_BODYPART = 3
 
 #%% CT metadata ###############################################################
 ##Are the CT metadata still in a series of raw CT output files, 
@@ -139,18 +129,17 @@ CALIBRATION_DESCRIPTION = None
 
 #If CT_METADATA_SPREADSHEET = True, then you need to map the column names below.
     #Refer to ctscan_sample1.csv for an example of how each default maps.
-NAME_SCAN = 'file_name'
-NAME_VOXELX = 'X_voxel_size_mm'
-NAME_VOXELY = 'Y_voxel_size_mm'
-NAME_VOXELZ = 'Z_voxel_size_mm'
-NAME_VOLTAGE = 'voltage_kv'
-NAME_AMPERAGE = 'amperage_ua'
-NAME_WATTS = 'watts'
-NAME_EXPOSURE = 'exposure_time'
-NAME_PROJECTIONS = 'projections'
-NAME_FRAME = 'frame_averaging'
-NAME_FILTER = 'filter'
-
+NAME_SCAN = 'file_name' #name of the scan. Might equal a specimen name or batch designation
+NAME_VOXELX = 'X_voxel_size_mm' #voxel size
+NAME_VOXELY = 'Y_voxel_size_mm' #voxel size
+NAME_VOXELZ = 'Z_voxel_size_mm' #voxel size
+NAME_VOLTAGE = 'voltage_kv' #voltage
+NAME_AMPERAGE = 'amperage_ua' #amperage
+NAME_WATTS = 'watts' #watts
+NAME_EXPOSURE = 'exposure_time' #exposure time
+NAME_PROJECTIONS = 'projections' #number of projections
+NAME_FRAME = 'frame_averaging' #frame averaging
+NAME_FILTER = 'filter' #filter
 #%% Spreadsheet mapping #######################################################
 #This section is one you will need if INPUT_DF = True and you want to map
     #variables that were not included in the CT metadata section.
@@ -175,5 +164,5 @@ NAME_ELEMENT = None
 #Note: when populating this column, text options are:
 #Not Applicable [use for 'whole body'], Unknown, Left, Right, Midline
 NAME_SIDE = None
-#The column name containing the file names to be uploaded. It seems unlikely to see use.
+#The column name containing the file names to be uploaded.
 NAME_FILE = None
