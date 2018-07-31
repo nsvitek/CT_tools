@@ -140,6 +140,8 @@ NAME_EXPOSURE = 'exposure_time' #exposure time
 NAME_PROJECTIONS = 'projections' #number of projections
 NAME_FRAME = 'frame_averaging' #frame averaging
 NAME_FILTER = 'filter' #filter
+
+###For each in filter: if 'Unknown', set to None
 #%% Spreadsheet mapping #######################################################
 #This section is one you will need if INPUT_DF = True and you want to map
     #variables that were not included in the CT metadata section.
@@ -166,3 +168,7 @@ NAME_ELEMENT = None
 NAME_SIDE = None
 #The column name containing the file names to be uploaded.
 NAME_FILE = None
+
+#%% Mesh settings #############################################################
+#Do your meshes have suffixes? (ex: 'UF-M-12345_mesh.stl' or 'UF_M_12345_cropped.stl')?
+MESH_SUFFIX = True

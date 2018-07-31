@@ -4,7 +4,7 @@
 Module is for reading and writing data in the Morphosource Batch Import Worksheet format.
 """
 import pandas as pd
-import re
+import copy
 
 #read in blank worksheet
 def read_mbs_worksheet(Rows):
@@ -18,9 +18,9 @@ def read_mbs_worksheet(Rows):
 #SpecimensRaw is an object, a column of specimen numbers (ex: UF 12345, UF 23456): 
 def fill_description(Worksheet, SpecimensRaw):
     Description = 'microCT volume and derivatives'
-    Description2 = SpecimensRaw
+    Description2 = copy.deepcopy(SpecimensRaw)
     for i in range(len(SpecimensRaw)):
-        Description2[i] = Description2.values + f' of {SpecimensRaw[i]}'
+        Description2[i] = Description + f' of {SpecimensRaw[i]}'
     Worksheet.iloc[3:,0] = Description2.values
     Worksheet.iloc[3:,46] = Description #46 = Media group description
     return Worksheet
@@ -70,16 +70,52 @@ def fill_ctmetadata(Worksheet, CT_metadata_dataframe):
     return Worksheet
 #59-74: scan settings
 #%% first media object: zipped tiff stack
-def fill_media1(Worksheet,FileNames,PreviewNames):
+def fill_zip(Worksheet,FileNames,Title):
     Worksheet.iloc[3:,75] = FileNames #75= file name
-    Worksheet.iloc[3:,76] = PreviewNames #76= preview file name
-    if re.match('(^.*)\.(.*)$', FileNames[0]).group(2) == "zip":
-        FileType = "raw"
-    else:
-        FileType = "derivative"
-    Worksheet.iloc[3:,81] = FileType #81= file type [raw or derivative]
+    #given that these are zipped tiff stacks or similar, no preview file
+    Worksheet.iloc[3:,76] = None #76= preview file name
+    Worksheet.iloc[3:,77] = Title #77 = file title [tiff stack, mesh, etc.]
+    Worksheet.iloc[3:,81] = "raw" #81= file type [raw or derivative]
+    return Worksheet
+#%% additional media objects: meshes
+def fill_meshes(Worksheet,MeshFileObject):
+    File = [[] for _ in range(len(MeshFileObject[0]))] 
+    Preview = [[] for _ in range(len(MeshFileObject[0]))]
+    Title = [[] for _ in range(len(MeshFileObject[0]))]
+    Type = [[] for _ in range(len(MeshFileObject[0]))]
+    for level1 in MeshFileObject:
+        for level2 in range(len(MeshFileObject[0])):
+            File[level2].extend(level1[level2][0])
+            Preview[level2].extend(level1[level2][1])
+            Title[level2].extend(level1[level2][2])
+            Type[level2].extend(level1[level2][3])
+    #84-92: second media object
+    Worksheet.iloc[3:,84] = File[0] #84= file name #2
+    Worksheet.iloc[3:,85] = Preview[0] #85= preview file name #2
+    Worksheet.iloc[3:,86] = Title[0] #86 = file title [tiff stack, mesh, etc.]
+    Worksheet.iloc[3:,90] = Type[0] #87= file type [raw or derivative]
+    if len(MeshFileObject[0])>1:
+        #third media object
+        Worksheet.iloc[3:,93] = File[1] #93= file name #3
+        Worksheet.iloc[3:,94] = Preview[1] #94= preview file name #3
+        Worksheet.iloc[3:,95] = Title[1] #95 = file title [tiff stack, mesh, etc.]
+        Worksheet.iloc[3:,99] = Type[1] #99= file type [raw or derivative]
+        #fourth media object
+        if len(MeshFileObject[0])>2:
+            Worksheet.iloc[3:,102] = File[2] #102= file name #4
+            Worksheet.iloc[3:,103] = Preview[2] #103= preview file name #4
+            Worksheet.iloc[3:,104] = Title[2] #104 = file title [tiff stack, mesh, etc.]
+            Worksheet.iloc[3:,108] = Type[2] #108= file type [raw or derivative]
+            #fifth media object
+            if len(MeshFileObject[0])>3:
+                Worksheet.iloc[3:,111] = File[3] #111= file name #5
+                Worksheet.iloc[3:,112] = Preview[3] #112= preview file name #5
+                Worksheet.iloc[3:,113] = Title[3] #113 = file title [tiff stack, mesh, etc.]
+                Worksheet.iloc[3:,117] = Type[3] #117= file type [raw or derivative]
+                if len(MeshFileObject[0])>4:
+                    print("Too many mesh files. Only returning the first four.")
     return Worksheet
 #%% additional media objects
-#84-93: second media object
-#94-101: third media object
-#Worksheet.iloc[1,55:75] #shows column names
+#Worksheet.iloc[1,93:] #shows column names
+
+#MeshFileObject = MeshData

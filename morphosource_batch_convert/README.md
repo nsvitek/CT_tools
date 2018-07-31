@@ -38,8 +38,6 @@ Additional CT metadata settings that are not necessarily included in raw scanner
 #### File names for upload
 If you have a single folder containing all the files you want to upload, including  zipped .tiff stacks and mesh files, the code can read those file names and match them to specimen metadata. In that case, set `UPLOAD_FOLDER` equal to the name of that single folder.
 
-    Support for mesh files is in development
-
 If you do not have such a folder, you can also include the file names as a column in a spreadsheet. In that case, set `OTHER_METADATA_FILE` equal to the name of your spreadsheet and `UPLOAD_FOLDER` equal to `None`.
 
 Your file names should be standardized to include at least the museum code and specimen number, if not also the collections code. Each of those pieces of information should be in the same part of the file name each time and be separated by a delimiter (example: "UF-M-12345"). Currently, the code supports " ", "_", and "-" as delimiters. If you can work with regular expressions and want to use a different set of delimiters, edit the `DELIMITER` variable. 
@@ -49,6 +47,8 @@ If your file names are set up as described above, then the code will break the s
 If your names are successfully segmented, then the code will query the iDigBio API to aquire occurrence IDs for each specimen. The user will have to interactively choose the correct collection for the batch upload, regardless of whether or not they include collection code information, because of the idiosyncracies of collections codes on iDigBio.
 
 _Note:_ If you are working with a spreadsheet of specimens, the specimen naming conventions should match the naming conventions of the files you want to upload.  
+
+**Mesh Files**: The code assumes that mesh files have identical names to the zip files except for file ending (ex: 'UF-M-12345.zip', 'UF-M-12345.stl'), unless there are multiple meshes per specimen (ex: 'UF-M-12345.zip', 'UF-M-12345_raw.stl', 'UF-M-12345_crop.stl'). If your mesh files have suffixes regardless (ex: 'UF-M-12345.zip', 'UF-M-12345_mesh.stl'), set `MESH_SUFFIX` to `True`.
 
 #### Grant and policy settings
 The `Media Permissions` section of `user_configuration.py` has lists of the copyright permission options and media policy options used by Morphosource. Set each variable to the number of the option you want to use. Set `PROVIDER` equal to the name of the copyright holder with the name in quotes. 

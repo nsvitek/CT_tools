@@ -25,6 +25,8 @@ import idigbio #for query_idigbio.py
 import sys #for exiting if there's a problem
 import os #to check if files exist
 import re #for stripping file endings, etc.
+import copy
+from numpy import nan
 
 #import log_data as ld #someday, when logging starts happening, turn this on and make it work.
 import user_configuration as uc
@@ -97,10 +99,12 @@ if uc.UPLOAD_FOLDER is None and uc.NAME_FILE is None:
 if uc.UPLOAD_FOLDER is not None:
     FileNamesRaw = os.listdir(uc.INPUT_PATH + '/' + uc.UPLOAD_FOLDER)
     ZipNames = []
+    ZipEnd = []
     for file in FileNamesRaw:
         file_parts = re.match('(^.*)\.(.*)$', file) #get file ending
-        if file_parts.group(2) == "zip":
+        if file_parts.group(2) == "zip" or file_parts.group(2) == "dcm" :
             ZipNames.append(file_parts.group(1))
+            ZipEnd.append('.' + file_parts.group(2))
 #Spreadsheet option next
 if uc.UPLOAD_FOLDER is None and uc.FILE_NAME is not None:
     CTdfReorder = CTdf
@@ -110,10 +114,13 @@ if uc.UPLOAD_FOLDER is None and uc.FILE_NAME is not None:
         ZipNames = FileNamesRaw
     if file_parts is not None:
         ZipNames = []
+        ZipEnd = []
         for file in FileNamesRaw:
             file_parts = re.match('(^.*)\.(.*)$', file) #get file ending
             if file_parts.group(2) == "zip":
                 ZipNames.append(file_parts.group(1))
+                ZipEnd.append('.' + file_parts.group(2))
+
 #Either way, get column of specimen names
 SpecimensRaw = pd.Series(ZipNames)
 print("All files in. Starting processing.")
@@ -145,23 +152,24 @@ if uc.SEGMENT_BODYPART is not None:
 else:
     Closeup = None
 #%% standardize entry order between file names and metadata ###################
+#create a string concatenating matching elements of file names, with or without collections code:
+if uc.BATCH == True:
+    CTSplit = CTdf[uc.NAME_SPECIMENS].str.split(uc.DELIMITER + '+', expand=True)
+if uc.BATCH == False:
+    CTSplit = CTdf[uc.NAME_SCAN].str.split(uc.DELIMITER + '+', expand=True)
+if uc.SEGMENT_COLLECTION is None:
+    NamePartsSpec = Institutions + SpecimenNumbers
+    NamePartsCT = CTSplit.iloc[:,uc.SEGMENT_MUSEUM]  + CTSplit.iloc[:,uc.SEGMENT_NUMBER]
+if uc.SEGMENT_COLLECTION is not None:
+    NamePartsSpec = Institutions + UserCollections + SpecimenNumbers
+    NamePartsCT = CTSplit.iloc[:,uc.SEGMENT_MUSEUM] + CTSplit.iloc[:,uc.SEGMENT_COLLECTION] + CTSplit.iloc[:,uc.SEGMENT_NUMBER]
+
 #if there are close-ups [i.e., multiple scans of same specimen], require exact match:
 if uc.SEGMENT_BODYPART is not None:
    #re-sort CT metadata to match files for upload
     CTdfReorder = CTdf.reindex(SpecimensRaw)               
 #if there are no closeups, then probably not multiple scans of one specimen so partial matching is okay
-#create a string concatenating matching elements of file names, with or without collections code:
 if uc.SEGMENT_BODYPART is None:
-    if uc.BATCH == True:
-        CTSplit = CTdf[uc.NAME_SPECIMENS].str.split(uc.DELIMITER + '+', expand=True)
-    if uc.BATCH == False:
-        CTSplit = CTdf[uc.NAME_SCAN].str.split(uc.DELIMITER + '+', expand=True)
-    if uc.SEGMENT_COLLECTION is None:
-        NamePartsSpec = Institutions + SpecimenNumbers
-        NamePartsCT = CTSplit.iloc[:,uc.SEGMENT_MUSEUM]  + CTSplit.iloc[:,uc.SEGMENT_NUMBER]
-    if uc.SEGMENT_COLLECTION is not None:
-        NamePartsSpec = Institutions + UserCollections + SpecimenNumbers
-        NamePartsCT = CTSplit.iloc[:,uc.SEGMENT_MUSEUM] + CTSplit.iloc[:,uc.SEGMENT_COLLECTION] + CTSplit.iloc[:,uc.SEGMENT_NUMBER]
     #will need to change index of CT metadata for sorting
     CTdf.index = NamePartsCT
     #re-sort CT metadata to match files for upload
@@ -244,15 +252,123 @@ MediaPol = mp.choose_media_policy(uc.MEDIA_POLICY)
 #%% get file names for first media object: zipped files of raw data ###########
 print('\nStarting file name input.')
 #ZipNames already has file names minus the '.zip', so add it back in
-ZipFileNames = [s + '.zip' for s in ZipNames] 
-#given that these are zipped tiff stacks or similar, no preview file
-PreviewNames1 = None
-#%% get file names for second media object: surface file ###########
-print('\nStarting file name input.')
-#ZipNames already has file names minus the '.zip', so add it back in
-ZipFileNames = [s + '.zip' for s in ZipNames] 
-#given that these are zipped tiff stacks or similar, no preview file
-PreviewNames1 = None
+ZipFileNames = ZipNames + ZipEnd
+ZipTitle = []
+#make the titles depending on type
+for ending in ZipEnd:
+    if ending == '.zip':
+        ZipTitle.append('zipped tiff stack')
+    if ending == '.dcm':
+        ZipTitle.append('dicom stack')
+ZipFileNames = ['{}{}'.format(a_, b_) for a_, b_ in zip(ZipNames,ZipEnd)]
+#%% get file names for other media object(s): mesh files ###########
+#Meshes have both their own files and preview image files. Make holder for each
+MeshNames = [[] for _ in range(2)] #list of 2 lists
+PreviewNames = [[] for _ in range(2)] #list of 2 lists
+for file in FileNamesRaw:
+    file_parts = re.match('(^.*)\.(.*)$', file) #get file ending
+    #find surface files
+    if file_parts.group(2) == "stl" or file_parts.group(2) == "ply":
+        MeshNames[0].append(file_parts.group(1))
+        MeshNames[1].append(file_parts.group(2))
+    #find preview files
+    if file_parts.group(2) == "jpg" or file_parts.group(2) == "jpeg" or file_parts.group(2) == "png" or file_parts.group(2) == "tiff" or file_parts.group(2) == "psd":
+        PreviewNames[0].append(file_parts.group(1))
+        PreviewNames[1].append(file_parts.group(2))
+#if there are any mesh files, split file name strings for matching
+if MeshNames[0] != []:
+    MeshSplit = pd.Series(MeshNames[0]).str.split(uc.DELIMITER + '+', expand=True)
+    if uc.SEGMENT_COLLECTION is None:
+        NamePartsMesh = MeshSplit.iloc[:,uc.SEGMENT_MUSEUM] + MeshSplit.iloc[:,uc.SEGMENT_NUMBER]
+    if uc.SEGMENT_COLLECTION is not None:
+        NamePartsMesh = MeshSplit.iloc[:,uc.SEGMENT_MUSEUM] + MeshSplit.iloc[:,uc.SEGMENT_COLLECTION] + MeshSplit.iloc[:,uc.SEGMENT_NUMBER]
+    #get a list of specimens with meshes for comparisons
+    MeshNamesUnique = set(NamePartsMesh)
+    #Start by assuming no need for suffixes
+    NeedSuffix = False
+    #If the user says you need a suffix, then it must be true.
+    if uc.MESH_SUFFIX == True:
+        NeedSuffix = True
+    for name in MeshNamesUnique:
+        #Check to make sure each mesh matches a file name
+        if name not in list(NamePartsSpec):
+            print(f"Mesh ID {name} cannot be matched to raw file.")
+        #Check for multiple meshes per name:
+        if list(NamePartsMesh).count(name) > 1:
+            NeedSuffix = True
+    if NeedSuffix == True:
+        #If suffix needed, look at last delimited column
+        SuffixColumn = len(MeshSplit.columns)-1
+        #make a column of suffixes
+        Suffixes = MeshSplit.iloc[:,SuffixColumn]
+    if NeedSuffix == False:
+        Suffixes = ['']*len(MeshNames[0])
+    #make a set of suffixes in that column
+    SuffixSet = set(Suffixes)
+    #strip names of suffixes, if present, for later matching
+    MeshZip = []
+    for index in range(len(MeshNames[0])):
+        if NeedSuffix == True:
+            RegexTerm = '(.*)' + uc.DELIMITER + Suffixes[index]
+        if NeedSuffix == False:
+            RegexTerm = '(.*)'
+        MinusSuffix = re.match(RegexTerm, MeshNames[0][index]).group(1)
+        MeshZip.append(MinusSuffix)
+    #if there are preview names, match mesh names exactly for now.
+    #if there are meshes but no previews, ask if the user still wants to continue.
+    if PreviewNames[0] == [] and MeshNames[0] != []:
+        Continue = input("No preview files for meshes found. Do you want to continue? [y/n]")
+        if Continue == 'n':
+            sys.exit()
+        if Continue == 'y':
+            PreviewNames2 = None
+    #if there are previews, get matching
+    if PreviewNames[0] != []:
+        PreviewMatch = copy.deepcopy(MeshNames)
+        for index in range(len(PreviewMatch[0])):
+            if PreviewMatch[0][index] not in PreviewNames[0]:
+                PreviewMatch[0][index] = None
+                PreviewMatch[1][index] = None
+            if PreviewMatch[0][index] in PreviewNames[0]:
+                index2 = PreviewNames[0].index(PreviewMatch[0][index])
+                PreviewMatch[1][index] = PreviewNames[1][index2]
+    MeshData = [[[[None] for _ in range(4)] for z in range(len(SuffixSet))] for _ in range(len(ZipNames))]
+    #for each file in ZipFile
+    for index1 in range(len(MeshData)):
+        #find any mesh files that match that ZipNames[index1]
+        ZipMatches = [i for i, x in enumerate(MeshZip) if x==(ZipNames[index1])]
+                    #look for a match of specimen and suffix
+        #if no match, then move on
+        if ZipMatches == []:
+            next
+        #if 1 or more matches, start filling in dictionaries
+        else:
+            #subset to only the information you need for these matches
+            SubNames1 = [MeshNames[0][i] for i in ZipMatches]
+            SubNames2 = [MeshNames[1][i] for i in ZipMatches]
+            SubNamesP = [PreviewMatch[1][i] for i in ZipMatches]
+            SubNames = ['{}.{}'.format(a, b) for a, b in zip(SubNames1,SubNames2)]
+            SubPreview = ['{}.{}'.format(a, b) for a, b in zip(SubNames1,SubNamesP)]
+            SubSuffix = [Suffixes[i] for i in ZipMatches]
+            #then iterate to fill in dictionaries for the matched zip file
+            for index2 in range(len(ZipMatches)):
+                #file name
+                MeshData[index1][index2][0] = [SubNames[index2]]
+                #preview name
+                if SubNamesP == [None]:
+                    MeshData[index1][index2][1] = [None]
+                else:
+                    MeshData[index1][index2][1] = [SubPreview[index2]]
+                #title
+                MeshData[index1][index2][2] = [SubSuffix[index2] + " mesh file"]
+                if SubNames[index2] == None:
+                    MeshData[index1][index2][3] = [None]
+                else:
+                    MeshData[index1][index2][3] = ["derivative"]
+#if there are no mesh files, set whatever variables you need to None
+if MeshNames[0] == []:
+    MeshData = None
+
 #%% fill information into formatted dataframe #################################
 print('\nOrganizing batch worksheet.')
 Rows = list(range(3,(len(SpecimensRaw)+3))) #which rows need to be filled
@@ -263,8 +379,12 @@ Worksheet = ftw.fill_permissions(Worksheet,GrantText,uc.PROVIDER,CopyPerm,MediaP
 Worksheet = ftw.fill_ctmetadata(Worksheet,CTdfReorder)
 if ElementText is not None:
     Worksheet = ftw.fill_element(Worksheet,ElementText,SideText)
-Worksheet = ftw.fill_media1(Worksheet,ZipFileNames,PreviewNames1)
-
+Worksheet = ftw.fill_zip(Worksheet,ZipFileNames, ZipTitle)
+if MeshData is not None:
+    Worksheet = ftw.fill_meshes(Worksheet, MeshData)
+#fix those None vs. NaN values
+Worksheet.fillna(value=nan, inplace=True)
+#    Worksheet.iloc[3,:]
 # check first before writing dataframe to spreadsheet
 print('\nWorksheet assembly complete.')
 print('\n'*3)
