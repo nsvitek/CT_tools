@@ -6,6 +6,8 @@ The entry point for users is the `user_configuration.py` file.
 #### Dependencies
 The code depends on the packages `pandas` and `idigbio`. See more on installing pandas [here](https://pandas.pydata.org/pandas-docs/stable/install.html) and on installing idigbio [here](https://pypi.org/project/idigbio/). 
 
+    Update 2 August 2018: Turns out that the code will not currently work with Python 2. I will work on editing the code such that it will work for both Python 2 and Python 3. Stay tuned. 
+
 ## Quick Start
 
 1. Open `user_configuration.py` in a text editor and change the variables in ALL CAPS to the correct settings for your job.
