@@ -293,8 +293,8 @@ if MeshNames[0] != []:
         #Check to make sure each mesh matches a file name
         if name not in list(NamePartsSpec):
             print(f"Mesh ID {name} cannot be matched to raw file.")
-        #Check for multiple meshes per name:
-        if list(NamePartsMesh).count(name) > 1:
+        if list(NamePartsMesh).count(name) > 1: #Check for multiple meshes per name:
+
             NeedSuffix = True
     if NeedSuffix == True:
         #If suffix needed, look at last delimited column
