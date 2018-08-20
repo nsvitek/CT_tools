@@ -7,9 +7,6 @@ They are written to both (1) allow use in the morphosource batch code and
 ### FUTURE NOTE: Is "[AutoScO] \n Active=1" the part where it specifies auto scan optimization?
 
 """
-from __future__ import division
-from builtins import range
-from past.utils import old_div
 import os, re, csv
 import pandas as pd
 
@@ -57,8 +54,8 @@ def read_log(Text2,Filename): #a string object split into list of lines.
     Sensitivity = "unknown"
     print("Reminder: SkyScan log files do not record sensitivity settings.")
     Watts = float(Current)*float(Voltage)/1000 # calculate watts
-    VoxelSizeMM = old_div(float(VoxelSizeUM),1000)
-    ExposureTime = old_div(float(TimingVal),1000)
+    VoxelSizeMM = float(VoxelSizeUM)/1000
+    ExposureTime = float(TimingVal)/1000
     FileID = re.search('([^\\\/]*)\.log',Filename).group(1) # pull out file name
     RowEntry = [FileID, VoxelSizeMM, VoxelSizeMM, VoxelSizeMM, Voltage, Current, Watts, ExposureTime, Filter, NumberImages, Avg]
     return(RowEntry)
@@ -113,7 +110,7 @@ def read_pca(Text2,Filename): #a string object split into list of lines.
                     NumberImages = SearchImageNumber.group(1)
     Watts = float(Current)*float(Voltage)/1000 # calculate watts
     VoxelSizeUM = float(VoxelSize)*1000
-    ExposureTime = old_div(float(TimingVal),1000)
+    ExposureTime = float(TimingVal)/1000
     FileID = re.search('([^\\\/]*)\.pca',Filename).group(1) # pull out file name
     RowEntry = [FileID, VoxelSize, VoxelSize, VoxelSize, Voltage, Current, Watts, ExposureTime, Filter, NumberImages, Avg]
     return(RowEntry)

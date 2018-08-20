@@ -6,7 +6,6 @@ This is a new verison of the CT_extract-settings script.
 """
 
 #from __future__ import print_function
-from builtins import range
 import os, re, csv
 #import logging, time #for logging
 import ct_metadata as ctmd

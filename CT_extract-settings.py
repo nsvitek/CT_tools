@@ -8,8 +8,11 @@ In future, hope to refactor and allow extraction from other CT file types.
 ### FUTURE NOTE: Is "[AutoScO] \n Active=1" the part where it specifies auto scan optimization?
 
 """
+from __future__ import division
 
 #from __future__ import print_function
+from builtins import range
+from past.utils import old_div
 import os, re, csv
 #import logging, time #for logging
 
@@ -118,7 +121,7 @@ for filename in FileNames:
 				NumberImages = SearchImageNumber.group(1)
 	Watts = float(Current)*float(Voltage)/1000 # calculate watts
 	VoxelSizeUM = float(VoxelSize)*1000
-	ExposureTime = float(TimingVal)/1000
+	ExposureTime = old_div(float(TimingVal),1000)
 	FileID = re.search('([^\/]*)\.pca',filename).group(1) # pull out file name
 	RowEntry = [FileID, VoxelSize, VoxelSize, VoxelSize, Voltage, Current, Watts, ExposureTime, Filter, NumberImages, Avg]
 	Results[i] = RowEntry

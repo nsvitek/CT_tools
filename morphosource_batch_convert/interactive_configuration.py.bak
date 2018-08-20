@@ -5,9 +5,6 @@ Interactively create a user_configuration file.
 @author: N.S
 """
 
-from builtins import str
-from builtins import input
-from builtins import range
 from shutil import copyfile
 import sys #for exiting if there's a problem
 import os #to check if files exist
@@ -23,40 +20,40 @@ File = open('user_configuration.py','w')
 
 #%% Get going.
 #path to folder where all your inputs are stored
-INPUT_PATH = eval(input('\nType the path to the folder where all your inputs are stored.')) 
+INPUT_PATH = input('\nType the path to the folder where all your inputs are stored.') 
 File.write(f'INPUT_PATH = "{INPUT_PATH}"')
 
-UPLOAD_FOLDER = eval(input('Type the name of the folder containing files to batch upload.'))
+UPLOAD_FOLDER = input('Type the name of the folder containing files to batch upload.')
 File.write(f'\nUPLOAD_FOLDER = "{UPLOAD_FOLDER}"')
 
-CtMetaFolder = eval(input("\nDo you have a folder of CT metadata files? [y/n]"))
+CtMetaFolder = input("\nDo you have a folder of CT metadata files? [y/n]")
 if CtMetaFolder == 'y':
-    CT_METADATA_FOLDER = eval(input('Type the name of the folder of CT metadata files.'))
+    CT_METADATA_FOLDER = input('Type the name of the folder of CT metadata files.')
     File.write(f'\nCT_METADATA_FOLDER = "{CT_METADATA_FOLDER}"')
 if CtMetaFolder == 'n':
     CT_METADATA_FOLDER = None
     File.write(f'\nCT_METADATA_FOLDER = None')
 
-CtMetaFile = eval(input("\nIs CT scan metadata already in a spreadsheet? [y/n]"))
+CtMetaFile = input("\nIs CT scan metadata already in a spreadsheet? [y/n]")
 if CtMetaFile == 'y':
-    CT_METADATA_FILE = eval(input('Type the file name of the CT metadata spreadsheet.'))
+    CT_METADATA_FILE = input('Type the file name of the CT metadata spreadsheet.')
     File.write(f'\nCT_METADATA_FILE = "{CT_METADATA_FILE}"')
 if CtMetaFile == 'n':
     CT_METADATA_FILE = None
     File.write(f'\nCT_METADATA_FILE = None')
 
-OtherMetaFile = eval(input("\nDo you have additional metadata in a separate spreadsheet? [y/n]"))
+OtherMetaFile = input("\nDo you have additional metadata in a separate spreadsheet? [y/n]")
 if OtherMetaFile == 'y':
-    OTHER_METADATA_FILE = eval(input('Type the file name of that spreadsheet.'))
+    OTHER_METADATA_FILE = input('Type the file name of that spreadsheet.')
     File.write(f'\nOTHER_METADATA_FILE = "{OTHER_METADATA_FILE}"')
 if OtherMetaFile == 'n':
     OTHER_METADATA_FILE = None
     File.write(f'\nOTHER_METADATA_FILE = None')
 
-OUTPUT_FILE = eval(input('\nType the name of the output file (plus path, if different from input).'))
+OUTPUT_FILE = input('\nType the name of the output file (plus path, if different from input).')
 File.write(f'\nOUTPUT_FILE = "{OUTPUT_FILE}"')
 
-oVert = eval(input('\nIs this upload part of the oVert TCN grant? [y/n]'))
+oVert = input('\nIs this upload part of the oVert TCN grant? [y/n]')
 if oVert == 'y':
     OVERT = True
     File.write(f'\nOVERT = True')
@@ -65,12 +62,12 @@ if oVert == 'n':
     File.write(f'\nOVERT = False')
 
 
-Batch = eval(input('\nAre there batch scans in the upload? [y/n]'))
+Batch = input('\nAre there batch scans in the upload? [y/n]')
 if Batch == 'y':
     BATCH = True
     File.write(f'\nBATCH = True')
     #this is the column name containing the name of which batch a specimen is in.
-    NAME_BATCH = eval(input('What is the name of the column containing the batch name for each specimen?'))
+    NAME_BATCH = input('What is the name of the column containing the batch name for each specimen?')
     File.write(f'\nNAME_BATCH = "{NAME_BATCH}"')
 if Batch == 'n':
     BATCH = False
@@ -78,71 +75,71 @@ if Batch == 'n':
     File.write(f'\nNAME_BATCH = None')
 
 if OtherMetaFile == 'y':
-    NAME_SPECIMENS = eval(input('\nType in the name of the column containing specimen names in the spreadsheet of additional data.'))
+    NAME_SPECIMENS = input('\nType in the name of the column containing specimen names in the spreadsheet of additional data.')
     File.write(f'\nNAME_SPECIMENS = "{NAME_SPECIMENS}"')
 
 if CT_METADATA_FILE is not None:
-    NAME_SCAN = eval(input('\nType the name of the column in the CT metadata spreadsheet containing scan names.'))
+    NAME_SCAN = input('\nType the name of the column in the CT metadata spreadsheet containing scan names.')
     File.write(f'\nNAME_SCAN = "{NAME_SCAN}"')
-    NAME_VOXELX = eval(input('\nType the name of the column containing voxel size information.'))
+    NAME_VOXELX = input('\nType the name of the column containing voxel size information.')
     NAME_VOXELY = NAME_VOXELZ = NAME_VOXELX
     File.write(f'\nNAME_VOXELX = "{NAME_VOXELX}"')
     File.write(f'\nNAME_VOXELY = "{NAME_VOXELY}"')
     File.write(f'\nNAME_VOXELZ = "{NAME_VOXELZ}"')
-    NAME_VOLTAGE = eval(input('\nType the name of the column containing voltage information.'))
+    NAME_VOLTAGE = input('\nType the name of the column containing voltage information.')
     File.write(f'\nNAME_VOLTAGE = "{NAME_VOLTAGE}"')
-    NAME_AMPERAGE = eval(input('\nType the name of the column containing amperage information.'))
+    NAME_AMPERAGE = input('\nType the name of the column containing amperage information.')
     File.write(f'\nNAME_AMPERAGE = "{NAME_AMPERAGE}"')
-    NameWatt = eval(input("\nIs there a column in a spreadsheet for watts? [y/n]"))
+    NameWatt = input("\nIs there a column in a spreadsheet for watts? [y/n]")
     if NameWatt == 'y':
-        NAME_WATTS = eval(input('Type the name of that column.'))
+        NAME_WATTS = input('Type the name of that column.')
         File.write(f'\nNAME_WATTS = "{NAME_WATTS}"')
     if NameWatt == 'n':
         File.write(f'\nNAME_WATTS = None')
-    NameExpose = eval(input("\nIs there a column in a spreadsheet for exposure time? [y/n]"))
+    NameExpose = input("\nIs there a column in a spreadsheet for exposure time? [y/n]")
     if NameExpose == 'y':
-        NAME_EXPOSURE = eval(input('Type the name of that column.'))
+        NAME_EXPOSURE = input('Type the name of that column.')
         File.write(f'\nNAME_EXPOSURE = "{NAME_EXPOSURE}"')
     if NameExpose == 'n':
         File.write(f'\nNAME_EXPOSURE = None')
-    NameProj = eval(input("\nIs there a column in a spreadsheet for number of projections? [y/n]"))
+    NameProj = input("\nIs there a column in a spreadsheet for number of projections? [y/n]")
     if NameProj == 'y':
-        NAME_PROJECTIONS = eval(input('Type the name of that column.'))
+        NAME_PROJECTIONS = input('Type the name of that column.')
         File.write(f'\nNAME_PROJECTIONS = "{NAME_PROJECTIONS}"')
     if NameProj == 'n':
         File.write(f'\nNAME_PROJECTIONS = None')
-    NameFrame = eval(input("\nIs there a column in a spreadsheet for frame averaging? [y/n]"))
+    NameFrame = input("\nIs there a column in a spreadsheet for frame averaging? [y/n]")
     if NameFrame == 'y':
-        NAME_FRAME = eval(input('Type the name of that column.'))
+        NAME_FRAME = input('Type the name of that column.')
         File.write(f'\nNAME_FRAME = "{NAME_FRAME}"')
     if NameFrame == 'n':
         File.write(f'\nNAME_FRAME = None')
-    NameFilter = eval(input("\nIs there a column in a spreadsheet for filter information? [y/n]"))
+    NameFilter = input("\nIs there a column in a spreadsheet for filter information? [y/n]")
     if NameFilter == 'y':
-        NAME_FILTER = eval(input('Type the name of that column.'))
+        NAME_FILTER = input('Type the name of that column.')
         File.write(f'\nNAME_FILTER = "{NAME_FILTER}"')
     if NameFilter == 'n':
         File.write(f'\nNAME_FILTER = None')
 
 #%% If not oVert, you need to set these variables, too ########################
 if OVERT == False:
-    FUNDING_SOURCE = eval(input('\nEnter any grant funding.'))
+    FUNDING_SOURCE = input('\nEnter any grant funding.')
     File.write(f'\nFUNDING_SOURCE = "{FUNDING_SOURCE}"')
-    NameElement = eval(input("\nIs there a column in a spreadsheet for element information? [y/n]"))
+    NameElement = input("\nIs there a column in a spreadsheet for element information? [y/n]")
     if NameElement == 'y':
-        NAME_ELEMENT = eval(input('Type the name of that column.'))
+        NAME_ELEMENT = input('Type the name of that column.')
         File.write(f'\nNAME_ELEMENT = "{NAME_ELEMENT}"')
     if NameElement == 'n':
         File.write(f'\nNAME_ELEMENT = None')
-    NameSide = eval(input("\nIs there a column in a spreadsheet for element side information? [y/n]"))
+    NameSide = input("\nIs there a column in a spreadsheet for element side information? [y/n]")
     if NameSide == 'y':
-        NAME_SIDE = eval(input('Type the name of that column.'))
+        NAME_SIDE = input('Type the name of that column.')
         File.write(f'\nNAME_SIDE = "{NAME_SIDE}"')
     if NameSide == 'n':
         File.write(f'\nNAME_SIDE = None')
-    NameFile = eval(input("\nIs there a column in a spreadsheet for the names of files to be uploaded? [y/n]"))
+    NameFile = input("\nIs there a column in a spreadsheet for the names of files to be uploaded? [y/n]")
     if NameFile == 'y':
-        NAME_FILE = eval(input('Type the name of that column.'))
+        NAME_FILE = input('Type the name of that column.')
         File.write(f'\nNAME_FILE = "{NAME_FILE}"')
     if NameFile == 'n':
         NAME_FILE = None
@@ -150,7 +147,7 @@ if OVERT == False:
 
 #%% to get  the name parts.    
 #delimitations
-Del1 = eval(input('\nAre your specimen names delimited \n(ex: Delimited: "MUS 12345", Undelimited: "MUS12345")? [y/n]'))
+Del1 = input('\nAre your specimen names delimited \n(ex: Delimited: "MUS 12345", Undelimited: "MUS12345")? [y/n]')
 if Del1 == 'n':
     DELIMITER = None #CHECK THIS
     File.write(f'\nDELIMITER = None')
@@ -243,24 +240,24 @@ if DELIMITER is None:
     SpecimensSplit = pd.DataFrame(Entry,columns = [0,1])
 
 print('\n' + SpecimensSplit)
-SegMuseum = eval(input('Type the column number containing museum codes.'))
+SegMuseum = input('Type the column number containing museum codes.')
 SEGMENT_MUSEUM = int(SegMuseum)
 File.write(f'\nSEGMENT_MUSEUM = {SEGMENT_MUSEUM}')
-SegNumber = eval(input('Type the column number containing specimen numbers.'))
+SegNumber = input('Type the column number containing specimen numbers.')
 SEGMENT_NUMBER = int(SegNumber)
 File.write(f'\nSEGMENT_NUMBER = {SEGMENT_NUMBER}')
 
-SC = eval(input('Do any of these columns contain collection code? [y/n]'))
+SC = input('Do any of these columns contain collection code? [y/n]')
 if SC == 'y':
-    SegCollection = eval(input('Type the column number containing collection codes.'))
+    SegCollection = input('Type the column number containing collection codes.')
     SEGMENT_COLLECTION = int(SegCollection)
     File.write(f'\nSEGMENT_COLLECTION = {SEGMENT_COLLECTION}')
 if SC == 'n':
     SEGMENT_COLLECTION = None
     File.write(f'\nSEGMENT_COLLECTION = None')
-SB = eval(input('Do any of these columns contain element information? [y/n]'))
+SB = input('Do any of these columns contain element information? [y/n]')
 if SB == 'y':
-    SegBody = eval(input('Type the column number containing element information.'))
+    SegBody = input('Type the column number containing element information.')
     SEGMENT_BODYPART = int(SegBody)
     File.write(f'\nSEGMENT_BODYPART = {SEGMENT_BODYPART}')
 if SB == 'n':
@@ -281,8 +278,8 @@ if OVERT == True:
         print(str(j) + ": " + i['awardeeName'])
         j = j+1
     #ask user to choose
-    GrantScan = eval(input("Which institution were specimens scanned at? If none, type 'none':"))
-    GrantIn = eval(input("Which institution did specimens come from? If none, type 'none':"))
+    GrantScan = input("Which institution were specimens scanned at? If none, type 'none':")
+    GrantIn = input("Which institution did specimens come from? If none, type 'none':")
     if GrantScan != 'none':
         File.write(f'\nGRANT_SCANNING_INSTITUTION = {int(GrantScan)}')
     if GrantScan == 'none':
@@ -294,7 +291,7 @@ if OVERT == True:
 
 #%% Keep on trucking.
         
-PROVIDER = eval(input('\nType the name of the copyright holder. This is often an instution, not a person.'))
+PROVIDER = input('\nType the name of the copyright holder. This is often an instution, not a person.')
 File.write(f'\nPROVIDER = "{PROVIDER}"')
 
 CopyrightPermission = ["Copyright permission not set",
@@ -306,7 +303,7 @@ CopyrightPermission = ["Copyright permission not set",
 print("\n### Copyright Permission Options:")
 for i in range(len(CopyrightPermission)):
     print(str(i) + ": " + CopyrightPermission[i])
-PermissionChoice = eval(input("Select copyright permission (often choice 2):"))
+PermissionChoice = input("Select copyright permission (often choice 2):")
 File.write(f'\nCOPY_PERMISSION = {int(PermissionChoice)}')
 
 MediaPolicy = ["Media reuse policy not set",
@@ -322,50 +319,50 @@ MediaPolicy = ["Media reuse policy not set",
 print("\n### Media Policy Options:")
 for i in range(len(MediaPolicy)):
     print(str(i) + ": " + MediaPolicy[i])
-PolicyChoice = eval(input("Select media policy (oVert prefers 5, but check with your institution):"))
+PolicyChoice = input("Select media policy (oVert prefers 5, but check with your institution):")
 File.write(f'\nMEDIA_POLICY = {int(PolicyChoice)}')
 
 #Add additional CT settings that aren't always in raw output files:
 #Write the name of the scanning technician in quotes
-TECHNICIAN = eval(input('\nType in the name of the people who assisted in CT scanning and processing.'))
+TECHNICIAN = input('\nType in the name of the people who assisted in CT scanning and processing.')
 File.write(f'\nTECHNICIAN = "{TECHNICIAN}"')
 
 #Write what wedge was use in scanning, if any, in quotes.
-Wedge = eval(input('\nDo you have information about the wedge used in scanning? [y/n]'))
+Wedge = input('\nDo you have information about the wedge used in scanning? [y/n]')
 if Wedge == 'y':
-    WEDGE = eval(input('Enter wedge type (ex: "air", "cotton"):'))
+    WEDGE = input('Enter wedge type (ex: "air", "cotton"):')
     File.write(f'\nWEDGE = "{WEDGE}"')
 if Wedge == 'n':
     File.write(f'\nWEDGE = None')
 
 #If you include shading, flux, or geometric calibrations, respectively, change to True.
-CalShade = eval(input('\nWere shading calibrations included in the scan? [y/n]'))
+CalShade = input('\nWere shading calibrations included in the scan? [y/n]')
 if CalShade == 'y':
     File.write(f'\nCALIBRATION_SHADE = True')
 if CalShade == 'n':
     File.write(f'\nCALIBRATION_SHADE = False')
 
-CalFlux = eval(input('\nWere flux calibrations included in the scan? [y/n]'))
+CalFlux = input('\nWere flux calibrations included in the scan? [y/n]')
 if CalFlux == 'y':
     File.write(f'\nCALIBRATION_FLUX = True')
 if CalFlux == 'n':
     File.write(f'\nCALIBRATION_FLUX = False')
 
 
-CalGeo = eval(input('\nWere geometric calibrations included in the scan? [y/n]'))
+CalGeo = input('\nWere geometric calibrations included in the scan? [y/n]')
 if CalGeo == 'y':
     File.write(f'\nCALIBRATION_GEOMETRIC = True')
 if CalGeo == 'n':
     File.write(f'\nCALIBRATION_GEOMETRIC = False')
 
-CalDesc = eval(input('\nDo you have additional information about calibrations? [y/n]'))
+CalDesc = input('\nDo you have additional information about calibrations? [y/n]')
 if CalDesc == 'y':
-    CALIBRATION_DESCRIPTION = eval(input('Type any description of scanner calibrations, if wanted.'))
+    CALIBRATION_DESCRIPTION = input('Type any description of scanner calibrations, if wanted.')
     File.write(f'\nCALIBRATION_DESCRIPTION = "{CALIBRATION_DESCRIPTION}"')
 if CalDesc == 'n':
     File.write(f'\nCALIBRATION_DESCRIPTION = None')
 
-MeshSuf = eval(input('\nDo mesh file names have suffixes (ex: "UF-M-12345_mesh.stl")? [y/n]'))
+MeshSuf = input('\nDo mesh file names have suffixes (ex: "UF-M-12345_mesh.stl")? [y/n]')
 if MeshSuf == 'y':
     File.write(f'\nMESH_SUFFIX = True')
 if MeshSuf == 'n':

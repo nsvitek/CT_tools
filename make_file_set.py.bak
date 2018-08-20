@@ -1,6 +1,7 @@
 #! /bin/env python
 ### script to make folders for a csv column of specimen names
 
+#from __future__ import print_function
 import os, sys, pandas
 
 # input location of csv file with file names
@@ -29,9 +30,9 @@ Specimen = get_spec(Decider,ColName)
 Specimens = Specimen.tolist()
 
 #print the list of desired specimens and check for folder existence. Does it look correct?
-print "Are these the names you want?"
-print Specimens
-print "\nNumber of names:"
+print("Are these the names you want?")
+print(Specimens)
+print("\nNumber of names:")
 print(len(Specimens))
 
 #continue?

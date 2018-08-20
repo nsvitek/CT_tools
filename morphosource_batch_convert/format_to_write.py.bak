@@ -3,14 +3,13 @@
 """
 Module is for reading and writing data in the Morphosource Batch Import Worksheet format.
 """
-from builtins import range
 import pandas as pd
 import copy
 
 #read in blank worksheet
 def read_mbs_worksheet(Rows):
     WorksheetRaw = pd.read_excel('MorphoSourceBatchImportWorksheet.xlsx',header = None)
-    WorksheetBlank = pd.DataFrame(index=list(range(0, Rows[-1]+1)), columns=WorksheetRaw.columns)
+    WorksheetBlank = pd.DataFrame(index=range(0, Rows[-1]+1), columns=WorksheetRaw.columns)
     WorksheetBlank.iloc[0:3,:] = WorksheetRaw.iloc[0:3,:]
     return WorksheetBlank
 #%% Fill in inital description column, as well as media description column. Same text.

@@ -20,9 +20,6 @@ want to break into multiple uploads, open an Issue on GitHub
 """
 #%% import dependencies #######################################################
 #import time #for log_data.py
-from builtins import input
-from builtins import zip
-from builtins import range
 import pandas as pd #for input_specimens.py
 import idigbio #for query_idigbio.py
 import sys #for exiting if there's a problem
@@ -145,7 +142,7 @@ if uc.SEGMENT_MUSEUM is None or uc.SEGMENT_NUMBER is None:
     sys.exit('Institution code or specimen number missing. Check SEGMENT_MUSEUM, SEGMENT_NUMBER, or the specimen split pattern above.')
 Institutions = SpecimensSplit.iloc[:, uc.SEGMENT_MUSEUM]
 if len(set(Institutions)) > 1:
-    Continue = eval(input('Warning: Multiple institution codes found: {Institutions}\nDo you want to continue? [y/n]'))
+    Continue = input('Warning: Multiple institution codes found: {Institutions}\nDo you want to continue? [y/n]')
     if Continue == 'n':
         sys.exit()
 SpecimenNumbers = SpecimensSplit.iloc[:, uc.SEGMENT_NUMBER]
@@ -329,7 +326,7 @@ if MeshNames[0] != []:
     #if there are preview names, match mesh names exactly for now.
     #if there are meshes but no previews, ask if the user still wants to continue.
     if PreviewNames[0] == [] and MeshNames[0] != []:
-        Continue = eval(input("No preview files for meshes found. Do you want to continue? [y/n]"))
+        Continue = input("No preview files for meshes found. Do you want to continue? [y/n]")
         if Continue == 'n':
             sys.exit()
         if Continue == 'y':
@@ -405,7 +402,7 @@ print('\n'*3)
 for i in Worksheet.columns:
     if pd.isna(Worksheet.iloc[3,i]) == False:
         print(Worksheet.iloc[[1,3],i].values)
-Finished = eval(input("Does everything look correct based on the first entry? [y/n]"))
+Finished = input("Does everything look correct based on the first entry? [y/n]")
 if Finished == 'y':
     #if everything looks good, write to file.
     writer = pd.ExcelWriter(uc.INPUT_PATH + '/' + uc.OUTPUT_FILE + '.xlsx')

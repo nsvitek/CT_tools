@@ -1,8 +1,5 @@
 #! /bin/env python
 """ get information from iDigBio API """
-from builtins import str
-from builtins import input
-from builtins import range
 import idigbio #for query_idigbio.py
 import pandas as pd
 
@@ -38,7 +35,7 @@ def choose_genus_column(UserInputRaw):
     for i in range(len(UserInputRaw.columns)):
         print(str(i) + ": " + UserInputRaw.columns[i])
     print("999: No column for variable of interest")
-    Genus = int(eval(input("Select the column number containing genus:"))) #make integer
+    Genus = int(input("Select the column number containing genus:")) #make integer
     if Genus == 999:
         Genera = None
     if pd.isna(UserInputRaw.iloc[0,Genus]) == True:
@@ -52,7 +49,7 @@ def user_choose_collection(PossibleCollections):
     """ User manually selects the correct collection code."""
     for i in range(len(PossibleCollections)):
         print(str(i) + ": " + PossibleCollections[i])
-    UserChoice = eval(input("Choose the number of the correct collection:"))
+    UserChoice = input("Choose the number of the correct collection:")
     CollectionsChoice = PossibleCollections[int(UserChoice)]
     return CollectionsChoice
 
@@ -64,7 +61,7 @@ def guess_collections(PossibleCollections, PossibleGenera, Genus):
             BestGuess = i
             print()
             print('Best guess of correct collection: ' + PossibleCollections[i])
-            GoodGuess = eval(input("Is this the correct collection? [y/n]"))
+            GoodGuess = input("Is this the correct collection? [y/n]")
             if GoodGuess == 'y':
                 CollectionsChoice = PossibleCollections[BestGuess]
     if BestGuess == None: 

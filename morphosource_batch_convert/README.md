@@ -8,7 +8,7 @@ If you want to create a custom configuration file interactively, step by step, y
 #### Dependencies
 The code depends on the packages `pandas` and `idigbio`. See more on installing pandas [here](https://pandas.pydata.org/pandas-docs/stable/install.html) and on installing idigbio [here](https://pypi.org/project/idigbio/). 
 
-    Update 2 August 2018: Turns out that the code will not currently work with Python 2. I will work on editing the code such that it will work for both Python 2 and Python 3. Stay tuned. 
+    Update 20 August 2018: The code has been updated for Python 2 compatibility but not tested. If you are running Python 2 and running into issues, please contact me. 
 
 ## Quick Start
 

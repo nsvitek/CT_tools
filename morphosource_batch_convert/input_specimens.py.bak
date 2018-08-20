@@ -1,8 +1,5 @@
 #! /bin/env python
 """This modules reads and parses a list of specimen names"""
-from builtins import input
-from builtins import str
-from builtins import range
 import pandas as pd #for input_specimens.py
 import re
 
@@ -37,7 +34,7 @@ def read_catalog_numbers(UserInputRaw):
     print("### Column Options")
     for i in range(len(UserInputRaw.columns)):
         print(str(i) + ": " + UserInputRaw.columns[i])
-    SpecimenName = eval(input("Select the column number containing catalog numbers:"))
+    SpecimenName = input("Select the column number containing catalog numbers:")
     SpecimensRaw = UserInputRaw.iloc[:,int(SpecimenName)]
     return SpecimensRaw
 
