@@ -149,8 +149,8 @@ if OVERT == False:
 #delimitations
 Del1 = input('\nAre your specimen names delimited \n(ex: Delimited: "MUS 12345", Undelimited: "MUS12345")? [y/n]')
 if Del1 == 'n':
-    DELIMITER = '' #CHECK THIS
-    File.write(f'\nDELIMITER = "{DELIMITER}"')
+    DELIMITER = None #CHECK THIS
+    File.write(f'\nDELIMITER = None')
 if Del1 == 'y':
     DELIMITER = '[\_\- ]'
     File.write(f'\nDELIMITER = "{DELIMITER}"')
@@ -228,9 +228,16 @@ if UPLOAD_FOLDER is None and FILE_NAME is not None:
                 ZipNames.append(file_parts.group(1))
                 ZipEnd.append('.' + file_parts.group(2))
 
-
 SpecimensRaw = pd.Series(ZipNames)
-SpecimensSplit = SpecimensRaw.str.split(DELIMITER + '+', expand=True)
+
+if DELIMITER is not None:
+    SpecimensSplit = SpecimensRaw.str.split(uc.DELIMITER + '+', expand=True)
+if DELIMITER is None:
+    Entry = []
+    for name in SpecimensRaw:
+        Answer = re.search('([A-Z\/]*)([0-9].*)',name)
+        Entry.append([Answer.group(1),Answer.group(2)])
+    SpecimensSplit = pd.DataFrame(Entry,columns = [0,1])
 
 print('\n' + SpecimensSplit)
 SegMuseum = input('Type the column number containing museum codes.')

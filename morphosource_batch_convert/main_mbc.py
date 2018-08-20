@@ -127,10 +127,15 @@ print("All files in. Starting processing.")
 #%% break up the catalogue number into parts ##################################
 print("Linking input by specimen name.")
 #split the specimen name so that individual pieces can be compared across input
-#if DELIMITER is not None:
-SpecimensSplit = SpecimensRaw.str.split(uc.DELIMITER + '+', expand=True)
-#if DELIMITER is None:
-#    ### ! Future: write a solution
+if DELIMITER is not None:
+    SpecimensSplit = SpecimensRaw.str.split(uc.DELIMITER + '+', expand=True)
+if DELIMITER is None:
+    Entry = []
+    for name in SpecimensRaw:
+        Answer = re.search('([A-Z\/]*)([0-9].*)',name)
+        Entry.append([Answer.group(1),Answer.group(2)])
+    SpecimensSplit = pd.DataFrame(Entry,columns = [0,1])
+
 print("\nFile names split as follows:")
 print(SpecimensSplit)
 if uc.SEGMENT_MUSEUM is None or uc.SEGMENT_NUMBER is None:
