@@ -3,11 +3,19 @@ collection of scripts for processing and working with CT data
 
 Described in order of addition
 
-### CT_extract-settings.py
+### CT_extract-settings.py, or CT metadata extraction.
 
-A python script designed to extract and organize metadata for a scan. It is designed to work with pca files that are produced by GE Phoenix line CT scanners
+#### This script now lives in the Morphosource Batch Convert project folder and has been renamed user_extract_CT.py  
+A python script designed to extract and organize metadata for a scan. It is designed to work with pca files that are produced by GE Phoenix line CT scanners, with xtekct files that are produced by Nikon CT scanners, and log files that are produced by SkyScan scanners. 
 
-**Input:** The script takes a small amount of user input (you will have to type if you want the script to draw from a single pca file or a folder containing multiple pca files, then you will have to specify the file path of your choice, then you will have to specify the name of the output table), and either (a) a single pca file, or (b) the location of a folder that contains multiple pca files. If drawing metadata from multiple files, those pca files can be nested in various subfolders within the folder you specify. The idea is that you don't have to change your file structure in order to extract data from multiple scans. 
+If you want to extract CT scan metadata without running the entire morphosource batch convert script, you will need two files in the Morphosource Batch Convert folder: `user_extract_CT.py` and `ct_metadata.py`. To use:
+
+1. Open `user_extract_CT.py` in a text editor and change the variables in ALL CAPS to the correct settings for your job.
+2. Open a terminal window on a machine with Python installed (for more on installing Python, see guide [here](https://realpython.com/installing-python/) or, if on Windows, consider the [Anaconda distribution](https://docs.anaconda.com/anaconda/install/windows)).
+3. Navigate to the location of the code by typing `cd C:\Path\to\morphosource_batch_convert`
+4. Type `python user_extract_CT.py`
+
+**Input:** The script takes a small amount of user input (you will have to specify the file path of your choice, then you will have to specify the name of the output table), and either (a) a single pca file, or (b) the location of a folder that contains multiple pca files. If drawing metadata from multiple files, those pca files can be nested in various subfolders within the folder you specify. The idea is that you don't have to change your file structure in order to extract data from multiple scans. 
 
 **Output:** The script will write a .csv file of a set of settings commonly used in processing scans or in sharing scan data. If some parameters of interest to you are not included in the output, please contact me and I'll see what I can do. 
 
@@ -29,4 +37,5 @@ In the future, I hope to integrate an automated check so that the script doesn't
 
 ### morphosource_batch_convert
 
-Not ready yet, but stay tuned. 
+A collection of python scripts that streamlines the batch uploading process in Morphosource.
+An updated versin of the CT_extract-settings.py script now lives in this folder!

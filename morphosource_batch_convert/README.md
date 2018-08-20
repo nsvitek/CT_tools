@@ -27,13 +27,13 @@ At minimum, you must provide the following via the variables in `user_configurat
 If a folder of files to upload or raw CT metadata files will not fit with your workflow, information can also be input entirely though spreadsheets. See guidelines below for how to set variables in `user_configuration.py` to  work with those alternative setups.
 
 #### CT scan metadata
-If your CT scanner outputs `.pca` files, the code can read CT scan metadata directly from those files. If you want to use that option, set the `CT_METADATA_FOLDER` variable equal to the folder that contains all of the metadata files you want to use. Set the `CT_METADATA_FILE` equal to `None`. 
-
-    Support for additional scanner metadata filetypes is in development
+If your CT scanner outputs `.pca`, `.xtekct`, or `.log` files, the code can read CT scan metadata directly from those files. If you want to use that option, set the `CT_METADATA_FOLDER` variable equal to the folder that contains all of the metadata files you want to use. Set the `CT_METADATA_FILE` equal to `None`. 
 
 Alternatively, the code can read CT scan metadata from a spreadsheet. In that case, set `CT_METADATA_FILE` equal to the name of the spreadsheet file you want to use (in .csv or .xlsx format) and set `CT_METADATA_FOLDER` equal to `None`. Then, set the variables in the `CT metadata` section of `user_configuration.py` so that each variable matches the name of the matching column in your spreadsheet. For example, `NAME_VOLTAGE` should equal the name of the column containing voltage information. 
 
 Additional CT metadata settings that are not necessarily included in raw scanner output files (example: the wedge used) can also be set with variables in the `CT metadata` section.
+
+**Standalone use:** If you want to extract CT scan metadata without running the entire morphosource batch convert script, use the script `user_extract_CT.py` script. It replaces the old `CT_extract-settings.py` script and depends on functions in the `ct_metadata.py` script. To use, open `user_extract_CT.py` in a text editor and change the input paths and output names in ALL CAPS. Then, run the script just as you would run `main_mbc.py`. 
 
 **Use with batch scans:** If multiple specimens are associated with the same CT metadata file, the user should provide a spreadsheet (`OTHER_METADATA_FILE`) that contains, at minimum, a column of specimen names (`NAME_SPECIMENS`) and a column with the names of the batch scan containing that specimen (`NAME_BATCH`). That same spreadsheet can optionally contain additional metadata. 
 

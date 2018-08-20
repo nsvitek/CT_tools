@@ -34,7 +34,7 @@ import input_specimens as inspec
 import query_idigbio as qi
 import media_policies as mp
 import format_to_write as ftw
-import temp_ct_pca as tcp
+import ct_metadata as ctmd
 #%% #Start. Get the files in. #################################################
 print('\nStarting file input.')
 #%% Scan metadata files########################################################
@@ -47,7 +47,7 @@ if uc.CT_METADATA_FILE is None and uc.CT_METADATA_FOLDER is None:
 if uc.CT_METADATA_FOLDER is not None: #works for either batch or not
     #run the extract settings script, modified temporarily
     CTInputPath = uc.INPUT_PATH + '/' + uc.CT_METADATA_FOLDER
-    CTdf = tcp.ctmeta_from_raw_files(CTInputPath,uc.NAME_SCAN)
+    CTdf = ctmd.ctmeta_from_raw_files(CTInputPath,uc.NAME_SCAN)
     #set UserInputCT to none, in contrast to file option
     UserInputCT = None
 #File option second.

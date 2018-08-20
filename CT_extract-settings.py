@@ -132,6 +132,3 @@ with open(OUTPUT_NAME+'.csv','w') as CSVFile:
 		DataWriter.writerow(Results[i])
 
 CSVFile.close()
-
-# # end logging
-# logging.info('End of script.')
