@@ -143,7 +143,7 @@ NAME_FILTER = 'filter' #filter
 
 ###For each in filter: if 'Unknown', set to None
 #%% Spreadsheet mapping #######################################################
-#This section is one you will need if INPUT_DF = True and you want to map
+#This section is one you will need if OTHER_METADATA_FILE = True and you want to map
     #variables that were not included in the CT metadata section.
     #Refer to input_sample1.csv for an example of how each default maps.
 NAME_SPECIMENS = 'Catalog number'

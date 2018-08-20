@@ -237,7 +237,12 @@ CTdfReorder['geom_calib'] = uc.CALIBRATION_GEOMETRIC
 if uc.CALIBRATION_DESCRIPTION is not None:
     CTdfReorder['calib_descrip'] = uc.CALIBRATION_DESCRIPTION
 else:
-    CTdfReorder['calib_descrip'] = None 
+    CTdfReorder['calib_descrip'] = None
+    
+# for each in filter, if 'Unknown' set to 'none'
+for line in CTdfReorder['filter']:
+    if line == 'Unknown':
+        line = 'none'
 #%% Grant reporting ###########################################################
 print('\nStarting policy input.')
 #oVert was user input earlier.

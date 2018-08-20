@@ -31,9 +31,7 @@ A python script to make a bunch of empty folders with the same name as entries i
 
 A python script to zip up folders full of tiff images (likely from a bunch of CT scans). 
 
-WARNING: Do not zip folders with more than 4 gb of data (unless someone with more know how chimes in to say otherwise). Window's native zip function will fail without warning or notice. It will leave behind a zip file that looks good until someone actually goes to use it (see https://www.researchgate.net/publication/316669746_Morphosource_Archiving_and_sharing_3-d_digital_specimen_data). 
-
-In the future, I hope to integrate an automated check so that the script doesn't make this mistake. For now, be careful. 
+The script calls the 'zipfile' package in the Python Standard Library (https://docs.python.org/2/library/zipfile.html),which can handle ZIP64 extension (the thing that lets you zip files >4gb), and thus should satisfy the concerns raised by the Morphosource best practice guidelines (see https://www.researchgate.net/publication/316669746_Morphosource_Archiving_and_sharing_3-d_digital_specimen_data). 
 
 ### morphosource_batch_convert
 
