@@ -16,7 +16,7 @@ import ct_metadata as ctmd
 #User sets each of these variables in ALL CAPS
 
 # user enters path of folder containing files, or individual file
-INPUT_PATH = "C:/path/to/files"
+INPUT_PATH = "F:/Miocene_CSBR"
 #INPUT_PATH = "C:/path/to/files"
 
 # ask the user for an output file name
