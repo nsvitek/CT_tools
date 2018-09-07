@@ -130,9 +130,9 @@ print("All files in. Starting processing.")
 #%% break up the catalogue number into parts ##################################
 print("Linking input by specimen name.")
 #split the specimen name so that individual pieces can be compared across input
-if DELIMITER is not None:
+if uc.DELIMITER is not None:
     SpecimensSplit = SpecimensRaw.str.split(uc.DELIMITER + '+', expand=True)
-if DELIMITER is None:
+if uc.DELIMITER is None:
     Entry = []
     for name in SpecimensRaw:
         Answer = re.search('([A-Z\/]*)([0-9].*)',name)
@@ -405,7 +405,7 @@ print('\n'*3)
 for i in Worksheet.columns:
     if pd.isna(Worksheet.iloc[3,i]) == False:
         print(Worksheet.iloc[[1,3],i].values)
-Finished = eval(input("Does everything look correct based on the first entry? [y/n]"))
+Finished = input("Does everything look correct based on the first entry? [y/n]")
 if Finished == 'y':
     #if everything looks good, write to file.
     writer = pd.ExcelWriter(uc.INPUT_PATH + '/' + uc.OUTPUT_FILE + '.xlsx')

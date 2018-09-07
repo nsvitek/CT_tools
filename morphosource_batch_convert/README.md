@@ -6,7 +6,7 @@ The entry point for users is the `user_configuration.py` file.
 If you want to create a custom configuration file interactively, step by step, you can do that, too. First, follow steps 1-3 in the Quick Start guide. Then, type in `python interactive_configuration.py`. Follow the instructions on your screen. **CAUTION:** This program will overwite the original configuration file (`user_configuration.py`) with a new file that is missing the notes and commentary in the original file. If you need to go back to that original user configuration script, it is preserved as `user_configuration_original.py`. 
 
 #### Dependencies
-The code depends on the packages `pandas` and `idigbio`. See more on installing pandas [here](https://pandas.pydata.org/pandas-docs/stable/install.html) and on installing idigbio [here](https://pypi.org/project/idigbio/). 
+The code depends on the packages `pandas`, `idigbio`, and `future`. See more on installing pandas [here](https://pandas.pydata.org/pandas-docs/stable/install.html) and on installing idigbio [here](https://pypi.org/project/idigbio/). Installing `future` is best done using the code `pip install future`. 
 
     Update 20 August 2018: The code has been updated for Python 2 compatibility but not tested. If you are running Python 2 and running into issues, please contact me. 
 
