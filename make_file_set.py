@@ -3,7 +3,7 @@
 
 #from __future__ import print_function
 from builtins import input
-import os, sys, pandas
+import os, sys, re, pandas
 
 # input location of csv file with file names
 path_input = ""
@@ -14,9 +14,21 @@ path_output = input("Enter the path of the location where you want your new fold
 if os.path.isdir(path_output): #check to make sure the folder exists
 	print('Output path found. Good start')
 else:
-	print('Path not found. Try again.')
+	sys.exit('Path not found. Try again.')
 
-Decider = pandas.read_csv(path_input)
+def read_user_input(input_file):
+    """ reads in user-provided specimen data """
+    file_suffix = re.match('.*\.(.*)$',input_file).group(1) #get file ending
+    if (file_suffix == "csv"): #if file is csv
+        user_input_raw = pandas.read_csv(input_file)
+    if (file_suffix == "xlsx"): #if file is excel spreadsheet
+        user_input_raw = pandas.read_excel(input_file)
+    if (file_suffix not in ('csv', 'xlsx')):
+        ErrorMessage = f'File ending {file_suffix} is not csv or xlsx.'
+        print(ErrorMessage)
+    return user_input_raw
+
+Decider = read_user_input(path_input)
 
 print("Here are the available column names")
 print(list(Decider.columns.values))
