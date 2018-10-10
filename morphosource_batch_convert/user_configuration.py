@@ -12,16 +12,16 @@ If you are not going to use a variable, don't leave it blank. Write 'None' inste
 """
 #%% File Paths ################################################################
 #path to folder where all your inputs are stored
-INPUT_PATH = 'C:/Users/N.S/Documents/7.31.18' 
+INPUT_PATH = 'C:/cygwin/home/N.S/scripts/CT_tools/morphosource_batch_convert/sample_data' 
 
 #The name of the folder containing files to batch upload.
-UPLOAD_FOLDER = 'Zstacks'
+UPLOAD_FOLDER = 'sample_ctscans'
 #UPLOAD_FOLDER = None
 
 #The rest of your metadata should come from either a series of CT metadata files
     #or a spreadsheet.
 #The name of the folder containing CT metadata files.
-CT_METADATA_FOLDER = 'Zstacks'
+CT_METADATA_FOLDER = 'sample_ctscans'
 #CT_METADATA_FOLDER = None
 
 #If CT scan metadata is already in a spreadsheet, enter file name. 
