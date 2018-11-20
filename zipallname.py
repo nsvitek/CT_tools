@@ -12,24 +12,31 @@ goldenmole = goldenmole.goldenmole
 #logging.basicConfig(level=logging.INFO,filename='zipallname'+time.strftime('%Y-%m-%d')+'.log',filemode='a')
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # .
-# set variables
+# Set Variables
 
-#set the container folder where the script should start looking for folders
-ContainerName = 'F:/Miocene_CSBR'
+#Decide if you want to zip data from all specimens (Raw = True) or a select list (Raw = False)
+Raw = True
 
-#set the file/column location for the list of desired specimens
+#If Raw = True, you can also specify to only zip folders with a certain prefix in their name (RawPrefix).
+RawPrefix = 'UF*'
+
+#Then decide if you want to zip .tiff's only (ImgOnly = True) or if you want to zip up all files in a folder.
+ImgOnly = True
+
+#If Raw = False, then you will need to 
+#Identify the .csv file that has a column of names you want to match to folders to zip
 DeciderFile = 'C://Users/N.S/Documents/Dissertation/modern/podomys/podomys_access.csv'
+#And identify the column to use within that .csv file
 ColName = 'specimen_num'
 
 #set search levels for folder tree. If more levels, code will need more tweaking
 # HighestSearch = 'podomys_floridanus'
 HighestSearch = ''
 
-#decide if you want to zip data from all specimens (Raw = True) or a select list (Raw = False?), or all specimens that have a certain prefix (RawPrefix)
-#and then decide if you want to zip .tiff's only or if you want to zip up all files.
-Raw = True
-RawPrefix = 'UF*'
-ImgOnly = True
+#Set the container folder where the script should start looking for folders
+ContainerName = 'F:/Miocene_CSBR'
+
+
 
 # End variable setting.
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # .

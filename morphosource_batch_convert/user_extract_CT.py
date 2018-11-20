@@ -16,11 +16,11 @@ import ct_metadata as ctmd
 #User sets each of these variables in ALL CAPS
 
 # user enters path of folder containing files, or individual file
-INPUT_PATH = "F:/Miocene_CSBR"
+INPUT_PATH = "G://"
 #INPUT_PATH = "C:/path/to/files"
 
 # ask the user for an output file name
-OUTPUT_NAME = "ctscan_metadata"
+OUTPUT_NAME = "fossil_out"
 
 #%% End User Configuration. ##################################################
 #%% Start running script. ####################################################

@@ -60,7 +60,7 @@ def read_log(Text2,Filename): #a string object split into list of lines.
     VoxelSizeMM = old_div(float(VoxelSizeUM),1000)
     ExposureTime = old_div(float(TimingVal),1000)
     FileID = re.search('([^\\\/]*)\.log',Filename).group(1) # pull out file name
-    RowEntry = [FileID, VoxelSizeMM, VoxelSizeMM, VoxelSizeMM, Voltage, Current, Watts, ExposureTime, Filter, NumberImages, Avg]
+    RowEntry = [FileID, VoxelSizeMM, VoxelSizeMM, VoxelSizeMM, Voltage, Current, Watts, ExposureTime, Filter, NumberImages, Avg,Sensitivity]
     return(RowEntry)
 
 def read_pca(Text2,Filename): #a string object split into list of lines.
@@ -115,7 +115,7 @@ def read_pca(Text2,Filename): #a string object split into list of lines.
     VoxelSizeUM = float(VoxelSize)*1000
     ExposureTime = old_div(float(TimingVal),1000)
     FileID = re.search('([^\\\/]*)\.pca',Filename).group(1) # pull out file name
-    RowEntry = [FileID, VoxelSize, VoxelSize, VoxelSize, Voltage, Current, Watts, ExposureTime, Filter, NumberImages, Avg]
+    RowEntry = [FileID, VoxelSize, VoxelSize, VoxelSize, Voltage, Current, Watts, ExposureTime, Filter, NumberImages, Avg,Sensitivity]
     return(RowEntry)
 
 def read_xtekct(Text2,Filename): #a string object split into list of lines.
@@ -152,12 +152,12 @@ def read_xtekct(Text2,Filename): #a string object split into list of lines.
     Watts = float(Current)*float(Voltage)/1000 # calculate watts
     VoxelSizeUM = float(VoxelSize)*1000
     FileID = re.search('([^\\\/]*)\.xtekct',Filename).group(1) # pull out file name
-    RowEntry = [FileID, VoxelSize, VoxelSize, VoxelSize, Voltage, Current, Watts, ExposureTime, Filter, NumberImages, Avg]
+    RowEntry = [FileID, VoxelSize, VoxelSize, VoxelSize, Voltage, Current, Watts, ExposureTime, Filter, NumberImages, Avg, Sensitivity]
     return(RowEntry)
 
 def ct_table(FileNames):
     # write the header for values
-    ColumnNames = ['file_name','X_voxel_size_mm','Y_voxel_size_mm','Z_voxel_size_mm','voltage_kv','amperage_ua','watts','exposure_time','filter','projections','frame_averaging']
+    ColumnNames = ['file_name','X_voxel_size_mm','Y_voxel_size_mm','Z_voxel_size_mm','voltage_kv','amperage_ua','watts','exposure_time','filter','projections','frame_averaging','sensitivity']
     #set up holder list for information
     Results = [[]]*(len(FileNames)+1)
     Results[0] = ColumnNames

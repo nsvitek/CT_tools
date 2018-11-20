@@ -5,11 +5,20 @@
 from builtins import input
 import os, sys, re, pandas
 
-# input location of csv file with file names
-path_input = ""
-path_input = input("Enter the path of your folder or file. Don't use quotes, just enter the path.")
 
-path_output = input("Enter the path of the location where you want your new folders to be created. Don't use quotes, just enter the path.")
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # .
+# Set Variables
+
+# input path to spreadsheet with file names
+path_input = "E:/stack1.xlsx"
+
+#Enter the path of the location where you want your new folders to be created. Don't use quotes, just enter the path.
+path_output = "E:/erethizontidae_mandibles"
+
+#Enter the column name that contains desired folder names.
+ColName = "folder_names"
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # .
 
 if os.path.isdir(path_output): #check to make sure the folder exists
 	print('Output path found. Good start')
@@ -29,10 +38,6 @@ def read_user_input(input_file):
     return user_input_raw
 
 Decider = read_user_input(path_input)
-
-print("Here are the available column names")
-print(list(Decider.columns.values))
-ColName = input("Enter the column name that contains desired folder names.")
 
 # define a short, helpful function
 def get_spec(csv, column_name):
