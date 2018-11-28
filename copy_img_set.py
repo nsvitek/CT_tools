@@ -56,7 +56,7 @@ def read_user_input(METADATA_FILE):
     if (file_suffix not in ('csv', 'xlsx')):
         ErrorMessage = f'File ending {file_suffix} is not csv or xlsx.'
         print(ErrorMessage)
-    return user_input_raws
+    return user_input_raw
 
 #apply function, read METADATA_FILE
 Decider = read_user_input(METADATA_FILE)
@@ -80,5 +80,4 @@ for i in range(0,len(Decider.folder_names)):
     for num in range(MatchStartIndex,MatchEndIndex):
         shutil.copy2(INPUT_FOLDER + "/" + Pictures[num],SpecimenFolder)
         print(SpecimenFolder + ": " + Pictures[num])
-    
-    
+
