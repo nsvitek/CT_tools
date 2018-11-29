@@ -52,6 +52,8 @@ def read_log(Text2,Filename): #a string object split into list of lines.
         SearchFilter = re.search('^Filter=(.*)$',Text2[Line])
         if SearchFilter:
             Filter = SearchFilter.group(1)
+    if Filter == "unknown":
+        Filter = "none"
     Skip = "unknown"
     print("\n Reminder: SkyScan log files do not record number of skipped frames.")
     Sensitivity = "unknown"
@@ -104,6 +106,8 @@ def read_pca(Text2,Filename): #a string object split into list of lines.
         SearchSensitivity = re.search('^CameraGain=(.*)$',Text2[Line])
         if SearchSensitivity:
             Sensitivity = SearchSensitivity.group(1)
+            if Sensitivity == "3":
+                Sensitivity = "4"
         if not SearchImages: #if the first search term for number of images didn't work, try an alternative
             for Line in range(len(Text2)): #search through lines for relevant values
                 SearchImages = re.search('^\[ACQUISITION\]',Text2[Line])
@@ -111,6 +115,8 @@ def read_pca(Text2,Filename): #a string object split into list of lines.
                     Line2 = Text2[Line+1]
                     SearchImageNumber = re.search('NumberImages=([0-9\.]*)', Line2)
                     NumberImages = SearchImageNumber.group(1)
+    if Filter == "unknown":
+        Filter = "none"
     Watts = float(Current)*float(Voltage)/1000 # calculate watts
     VoxelSizeUM = float(VoxelSize)*1000
     ExposureTime = old_div(float(TimingVal),1000)
@@ -141,6 +147,8 @@ def read_xtekct(Text2,Filename): #a string object split into list of lines.
                 SearchFilter2 = re.search('^Filter_Material=(.*)$',Text2[Line+1])
                 Filter = Filter1 + " mm" + SearchFilter2.group(1)
     #xtekct files don't record exposure time as of 08-2018
+    if Filter == "unknown":
+        Filter = "none"
     ExposureTime = "unknown"
     print("\n Reminder: xtekct files do not record exposure time.")
     Avg = "unknown"

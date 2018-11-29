@@ -1,4 +1,4 @@
 Catalog number,Class,Order,Family,Genus,Species,Body scanned,Close-up Head scanned,DICE-CT,Scanned date,Morphosource Body,Morphosource Head,Morphosource,Notes,Batch
-UF I 236194,Actinopterygii,Amiiformes,Amiidae,Amia,calva,Y,Y,,Feb142018,,,,,A
-UF I 187802,Actinopterygii,Lepisosteiformes,Lepisosteidae,Lepisosteus,oculatus,Y,Y,,Feb142018,,,,,C
-UF I 78923,Actinopterygii,Elopiformes,Megalopidae,Megalops,atlanticus,Y,N,,21-Feb-17,M22371,,,,C
+UF-I-236194,Actinopterygii,Amiiformes,Amiidae,Amia,calva,Y,Y,,Feb142018,,,,,A
+UF-I-187802,Actinopterygii,Lepisosteiformes,Lepisosteidae,Lepisosteus,oculatus,Y,Y,,Feb142018,,,,,C
+UF-I-78923,Actinopterygii,Elopiformes,Megalopidae,Megalops,atlanticus,Y,N,,21-Feb-17,M22371,,,,C

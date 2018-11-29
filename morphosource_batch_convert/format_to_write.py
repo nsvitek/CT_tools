@@ -34,6 +34,10 @@ def fill_ids(Worksheet, SpecimenDf):
     Worksheet.iloc[3:,4] = SpecimenDf.iloc[:,1].values #4= Collections Code
     Worksheet.iloc[3:,5] = SpecimenDf.iloc[:,2].values #5= Specimen Number
     return Worksheet
+#%% Fill in download permissions
+def fill_overt_downloads(Worksheet):
+    Worksheet.iloc[3:,47] = 2 #47 Publication Status
+    return Worksheet
 #%% Fill in element
 def fill_element(Worksheet, ElementText, SideText):
     Worksheet.iloc[3:,48] = ElementText #48 Element
@@ -90,32 +94,16 @@ def fill_meshes(Worksheet,MeshFileObject):
             Preview[level2].extend(level1[level2][1])
             Title[level2].extend(level1[level2][2])
             Type[level2].extend(level1[level2][3])
-    #84-92: second media object
-    Worksheet.iloc[3:,84] = File[0] #84= file name #2
-    Worksheet.iloc[3:,85] = Preview[0] #85= preview file name #2
-    Worksheet.iloc[3:,86] = Title[0] #86 = file title [tiff stack, mesh, etc.]
-    Worksheet.iloc[3:,90] = Type[0] #87= file type [raw or derivative]
-    if len(MeshFileObject[0])>1:
-        #third media object
-        Worksheet.iloc[3:,93] = File[1] #93= file name #3
-        Worksheet.iloc[3:,94] = Preview[1] #94= preview file name #3
-        Worksheet.iloc[3:,95] = Title[1] #95 = file title [tiff stack, mesh, etc.]
-        Worksheet.iloc[3:,99] = Type[1] #99= file type [raw or derivative]
-        #fourth media object
-        if len(MeshFileObject[0])>2:
-            Worksheet.iloc[3:,102] = File[2] #102= file name #4
-            Worksheet.iloc[3:,103] = Preview[2] #103= preview file name #4
-            Worksheet.iloc[3:,104] = Title[2] #104 = file title [tiff stack, mesh, etc.]
-            Worksheet.iloc[3:,108] = Type[2] #108= file type [raw or derivative]
-            #fifth media object
-            if len(MeshFileObject[0])>3:
-                Worksheet.iloc[3:,111] = File[3] #111= file name #5
-                Worksheet.iloc[3:,112] = Preview[3] #112= preview file name #5
-                Worksheet.iloc[3:,113] = Title[3] #113 = file title [tiff stack, mesh, etc.]
-                Worksheet.iloc[3:,117] = Type[3] #117= file type [raw or derivative]
-                if len(MeshFileObject[0])>4:
-                    print("Too many mesh files. Only returning the first four.")
+    #84-92: second media object, after tiff stack
+    #for loop allows iterative filling for infinite number of surfaces
+    for i in range(len(MeshFileObject[0])):
+        Worksheet.iloc[3:,(84+(9*i))] = File[i] #84= file name #2
+        Worksheet.iloc[3:,(85+(9*i))] = Preview[i] #85= preview file name #2
+        Worksheet.iloc[3:,(86+(9*i))] = Title[i] #86 = file title [tiff stack, mesh, etc.]
+        Worksheet.iloc[3:,(90+(9*i))] = Type[i]
     return Worksheet
+
+
 #%% additional media objects
 #Worksheet.iloc[1,93:] #shows column names
 

@@ -87,7 +87,7 @@ if uc.OTHER_METADATA_FILE is not None:
                 if UserInput[uc.NAME_SPECIMENS][row1] == CTdf[uc.NAME_SCAN][row2]:
                     UserInputMatch.append(list(CTdf.iloc[row2,:]))
     if len(UserInputMatch) != len(UserInput):
-        sys.exit("Error: cannot completely match the two spreadsheets.")
+        sys.exit("Error: cannot completely match the two spreadsheets. Did you set BATCH to True?")
     #then turn UserInputMatch list into dataframe
     CTdfMatch = pd.DataFrame(UserInputMatch, columns = CTdf.columns)
     #merge two spreadsheets into CTdf
@@ -394,6 +394,9 @@ if ElementText is not None:
 Worksheet = ftw.fill_zip(Worksheet,ZipFileNames, ZipTitle)
 if MeshData is not None:
     Worksheet = ftw.fill_meshes(Worksheet, MeshData)
+if uc.OVERT == True:
+    Worksheet = ftw.fill_overt_downloads(Worksheet)
+    
 #fix those None vs. NaN values
 Worksheet.fillna(value=nan, inplace=True)
 #    Worksheet.iloc[3,:]
