@@ -34,7 +34,7 @@ ColName = 'specimen_num'
 HighestSearch = ''
 
 #Set the container folder where the script should start looking for folders
-ContainerName = 'F:/Miocene_CSBR'
+ContainerName = 'D:/porcupine4morphosource'
 
 
 
