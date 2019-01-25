@@ -38,6 +38,10 @@ def fill_ids(Worksheet, SpecimenDf):
 def fill_overt_downloads(Worksheet):
     Worksheet.iloc[3:,47] = 2 #47 Publication Status
     return Worksheet
+	
+def fill_downloads(Worksheet, DownloadPolicy):
+    Worksheet.iloc[3:,47] = DownloadPolicy #47 Publication Status
+    return Worksheet	
 #%% Fill in element
 def fill_element(Worksheet, ElementText, SideText):
     Worksheet.iloc[3:,48] = ElementText #48 Element
