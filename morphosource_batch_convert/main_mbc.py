@@ -185,24 +185,18 @@ if uc.SEGMENT_BODYPART is None:
 #change index back so that there aren't index duplicates downstream
 CTdfReorder.index = SpecimensRaw 
 #%% query idigbio #############################################################
-print('\nStarting iDigBio queries to find occurrence IDs.')
-PossibleSpecimens = qi.find_options(list(Institutions)[0], list(SpecimenNumbers)[0])
-PossibleCollections = qi.collections_options(PossibleSpecimens)
-print('\nHere are possible collection codes based on the first specimen number:')
-#%% guess collection? #########################################################
-#Guess = input("Do you want the program to guess the correct collection based on genus provided? [y/n]")
-#if Guess == 'y':
-#    Genus = qi.choose_genus_column(UserInputRaw)
-#    if pd.isna(Genus[0]) == True:
-#        print("No genus provided for guessing. You choose.")
-#        CollectionsChoice = qi.user_choose_collection(PossibleCollections)
-#    else:
-#        PossibleGenera = qi.genera_options(PossibleSpecimens)
-#        CollectionsChoice = qi.guess_collections(PossibleCollections, PossibleGenera, Genus)
-#if Guess == 'n':
-CollectionsChoice = qi.user_choose_collection(PossibleCollections)
-#for each, pull the Occurrence IDs.
-SpecimenDf = qi.make_occurrence_df(CollectionsChoice, SpecimensSplit, uc.SEGMENT_MUSEUM, uc.SEGMENT_NUMBER)
+if uc.QUERY_IDIGBIO == True:
+	print('\nStarting iDigBio queries to find occurrence IDs.')
+	PossibleSpecimens = qi.find_options(list(Institutions)[0], list(SpecimenNumbers)[0])
+	PossibleCollections = qi.collections_options(PossibleSpecimens)
+	print('\nHere are possible collection codes based on the first specimen number:')
+	CollectionsChoice = qi.user_choose_collection(PossibleCollections)
+	#for each, pull the Occurrence IDs.
+	SpecimenDf = qi.make_occurrence_df(CollectionsChoice, SpecimensSplit, uc.SEGMENT_MUSEUM, uc.SEGMENT_NUMBER)
+if uc.QUERY_IDIGBIO == False:	#NOT WORKING
+    SpecimenDf = SpecimensSplit
+    SpecimenDf = pd.DataFrame(SpecimensSplit.iloc[:,0:3], columns = ["Institution","Collection","CatalogNumber"])
+
 #SpecimenDf.iloc[:,3]
 #%% check for multiple collections ############################################
 #MultipleCollections = input("Does this batch of specimens sample multiple collections? [y/n]")

@@ -44,6 +44,8 @@ OUTPUT_FILE = 'MSBIW_test'
 OVERT = True
 #Batch: Are there batch scans in the upload?
 BATCH = False
+#Query iDigBio: Do you want to search the iDigBio database to fill in Collection and Occurrence ID?
+QUERY_IDIGBIO = False
 #%% File name parsing #########################################################
 #User needs to set how a file name will be parsed into a specimen
     #In oVert, the recommended file naming convention is:
