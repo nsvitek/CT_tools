@@ -221,8 +221,8 @@ if uc.OVERT == True:
     else:
         ElementText = None
 if uc.OVERT == False:
-    ElementText = UserInputRaw[uc.NAME_ELEMENT]
-    SideText = UserInputRaw[uc.NAME_SIDE]
+    ElementText = CTdfReorder[uc.NAME_ELEMENT].tolist()
+    SideText = CTdfReorder[uc.NAME_SIDE].tolist()
 #%% additional CT metadata ####################################################
 #add in additional info not necessarily included in CT metadata files
 if uc.TECHNICIAN is not None:
@@ -252,7 +252,7 @@ if uc.OVERT == True:
     import grant_reporting as ggr
     GrantText = ggr.generate_grant_report(uc.GRANT_SCANNING_INSTITUTION,uc.GRANT_SPECIMEN_PROVIDER)
 if uc.OVERT == False:
-    Granttext = uc.FUNDING_SOURCE
+    GrantText = uc.FUNDING_SOURCE
 #%% Copyright policy ##########################################################
 CopyPerm = mp.choose_copyright_permission(uc.COPY_PERMISSION)
 MediaPol = mp.choose_media_policy(uc.MEDIA_POLICY)
@@ -279,7 +279,7 @@ for file in FileNamesRaw:
         MeshNames[0].append(file_parts.group(1))
         MeshNames[1].append(file_parts.group(2))
     #find preview files
-    if file_parts.group(2) == "jpg" or file_parts.group(2) == "jpeg" or file_parts.group(2) == "png" or file_parts.group(2) == "tiff" or file_parts.group(2) == "psd":
+    if file_parts.group(2).lower() == "jpg" or file_parts.group(2).lower() == "jpeg" or file_parts.group(2).lower() == "png" or file_parts.group(2).lower() == "tiff" or file_parts.group(2).lower() == "psd":
         PreviewNames[0].append(file_parts.group(1))
         PreviewNames[1].append(file_parts.group(2))
 #if there are any mesh files, split file name strings for matching
@@ -390,7 +390,9 @@ if MeshData is not None:
     Worksheet = ftw.fill_meshes(Worksheet, MeshData)
 if uc.OVERT == True:
     Worksheet = ftw.fill_overt_downloads(Worksheet)
-    
+if uc.OVERT == False:
+    Worksheet = ftw.fill_downloads(Worksheet,uc.DOWNLOAD_POLICY)
+
 #fix those None vs. NaN values
 Worksheet.fillna(value=nan, inplace=True)
 #    Worksheet.iloc[3,:]
