@@ -34,6 +34,12 @@ def fill_ids(Worksheet, SpecimenDf):
     Worksheet.iloc[3:,4] = SpecimenDf.iloc[:,1].values #4= Collections Code
     Worksheet.iloc[3:,5] = SpecimenDf.iloc[:,2].values #5= Specimen Number
     return Worksheet
+#%% Fill in Genus species taxonomy in the absence of occurrence ID.
+def fill_taxonomy(Worksheet, Genus, Species):
+    Worksheet.iloc[3:,27] = Genus.values #27= Genus
+    Worksheet.iloc[3:,28] = Species.values #28= Species
+    return Worksheet
+
 #%% Fill in download permissions
 def fill_overt_downloads(Worksheet):
     Worksheet.iloc[3:,47] = 2 #47 Publication Status

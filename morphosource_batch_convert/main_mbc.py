@@ -193,7 +193,7 @@ if uc.QUERY_IDIGBIO == True:
 	CollectionsChoice = qi.user_choose_collection(PossibleCollections)
 	#for each, pull the Occurrence IDs.
 	SpecimenDf = qi.make_occurrence_df(CollectionsChoice, SpecimensSplit, uc.SEGMENT_MUSEUM, uc.SEGMENT_NUMBER)
-if uc.QUERY_IDIGBIO == False:	#NOT WORKING
+if uc.QUERY_IDIGBIO == False:	
     if uc.SEGMENT_COLLECTION is None:
         SpecimenDf = SpecimensSplit.iloc[:,[uc.SEGMENT_MUSEUM, uc.SEGMENT_MUSEUM, uc.SEGMENT_NUMBER]]
         SpecimenDf.columns = ["Institution","Collection","CatalogNumber"]
@@ -202,6 +202,14 @@ if uc.QUERY_IDIGBIO == False:	#NOT WORKING
         SpecimenDf = SpecimensSplit.iloc[:,[uc.SEGMENT_MUSEUM, uc.SEGMENT_COLLECTION, uc.SEGMENT_NUMBER]]
         SpecimenDf.columns = ["Institution","Collection","CatalogNumber"]
     SpecimenDf = SpecimenDf.assign(OccurrenceID=nan)
+    if uc.NAME_GENUS is not None:
+        Genus = CTdfReorder[uc.NAME_GENUS]
+    else: 
+        Genus = None
+    if uc.NAME_SPECIES is not None:
+        Species = CTdfReorder[uc.NAME_SPECIES]
+    else:
+        Species = None
 
 #%% check for multiple collections ############################################
 #MultipleCollections = input("Does this batch of specimens sample multiple collections? [y/n]")
@@ -397,7 +405,9 @@ if uc.OVERT == True:
     Worksheet = ftw.fill_overt_downloads(Worksheet)
 if uc.OVERT == False:
     Worksheet = ftw.fill_downloads(Worksheet,uc.DOWNLOAD_POLICY)
-
+if uc.QUERY_IDIGBIO == False:
+    Worksheet = ftw.fill_taxonomy(Worksheet, Genus, Species)
+    
 #fix those None vs. NaN values
 Worksheet.fillna(value=nan, inplace=True)
 #    Worksheet.iloc[3,:]

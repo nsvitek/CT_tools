@@ -15,22 +15,22 @@ If you are not going to use a variable, don't leave it blank. Write 'None' inste
 INPUT_PATH = 'C:/cygwin/home/N.S/scripts/CT_tools/morphosource_batch_convert/sample_data' 
 
 #The name of the folder containing files to batch upload.
-UPLOAD_FOLDER = 'sample_ctscans'
+UPLOAD_FOLDER = 'sample_batch'
 #UPLOAD_FOLDER = None
 
 #The rest of your metadata should come from either a series of CT metadata files
     #or a spreadsheet.
 #The name of the folder containing CT metadata files.
-CT_METADATA_FOLDER = 'sample_ctscans'
-#CT_METADATA_FOLDER = None
+#CT_METADATA_FOLDER = 'sample_batch'
+CT_METADATA_FOLDER = None
 
 #If CT scan metadata is already in a spreadsheet, enter file name. 
     #Don't forget to set CT_METADATA_FOLDER = None in this case.
-#CT_METADATA_FILE = 'ctscan_batch_sample1.csv'
-CT_METADATA_FILE = None
+CT_METADATA_FILE = 'ctscan_batch_sample1.csv'
+#CT_METADATA_FILE = None
 #If have additional metadata in a separate spreadsheet (.csv or .xlsx), put that file name here
-#OTHER_METADATA_FILE = 'input_sample1.csv'
-OTHER_METADATA_FILE = None
+OTHER_METADATA_FILE = 'input_sample1.csv'
+#OTHER_METADATA_FILE = None
 #Spreadsheet file options:
     #if you have a single spreadsheet with both CT metadata and other data,
     #then use only CT_METADATA_FILE and set OTHER_METADATA_FILE to None.
@@ -43,7 +43,7 @@ OUTPUT_FILE = 'MSBIW_test'
 #oVert: Is this upload part of the oVert TCN grant?
 OVERT = True
 #Batch: Are there batch scans in the upload?
-BATCH = False
+BATCH = True
 #Query iDigBio: Do you want to search the iDigBio database to fill in Collection and Occurrence ID?
 QUERY_IDIGBIO = False
 #%% File name parsing #########################################################
@@ -60,7 +60,7 @@ DELIMITER = '[\_\- ]'
 SEGMENT_MUSEUM = 0
 SEGMENT_COLLECTION = 1
 SEGMENT_NUMBER = 2
-SEGMENT_BODYPART = 3
+SEGMENT_BODYPART = None
 #%% oVert-specific settings ###################################################
 #### TCN Institutions
 #0: University of Washington
@@ -150,9 +150,8 @@ NAME_FILTER = 'filter' #filter
     #Refer to input_sample1.csv for an example of how each default maps.
 NAME_SPECIMENS = 'Catalog number'
 
-#If you want to use extra information to help match collection codes, 
-    #what column in the spreadsheet contains the data to use for matching?
-NAME_MATCH = 'Genus'
+NAME_GENUS = 'Genus'
+NAME_SPECIES = 'Species'
 #%% Batch variables ###########################################################
 #if you batch scanned, then you must have a spreadsheet in INPUT_DF.
     #Why? Because you need a key to match specimens to the batches they are a part of
