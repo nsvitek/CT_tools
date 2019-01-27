@@ -194,10 +194,15 @@ if uc.QUERY_IDIGBIO == True:
 	#for each, pull the Occurrence IDs.
 	SpecimenDf = qi.make_occurrence_df(CollectionsChoice, SpecimensSplit, uc.SEGMENT_MUSEUM, uc.SEGMENT_NUMBER)
 if uc.QUERY_IDIGBIO == False:	#NOT WORKING
-    SpecimenDf = SpecimensSplit
-    SpecimenDf = pd.DataFrame(SpecimensSplit.iloc[:,0:3], columns = ["Institution","Collection","CatalogNumber"])
+    if uc.SEGMENT_COLLECTION is None:
+        SpecimenDf = SpecimensSplit.iloc[:,[uc.SEGMENT_MUSEUM, uc.SEGMENT_MUSEUM, uc.SEGMENT_NUMBER]]
+        SpecimenDf.columns = ["Institution","Collection","CatalogNumber"]
+        SpecimenDf.assign(Collection=nan)
+    if uc.SEGMENT_COLLECTION is not None:
+        SpecimenDf = SpecimensSplit.iloc[:,[uc.SEGMENT_MUSEUM, uc.SEGMENT_COLLECTION, uc.SEGMENT_NUMBER]]
+        SpecimenDf.columns = ["Institution","Collection","CatalogNumber"]
+    SpecimenDf = SpecimenDf.assign(OccurrenceID=nan)
 
-#SpecimenDf.iloc[:,3]
 #%% check for multiple collections ############################################
 #MultipleCollections = input("Does this batch of specimens sample multiple collections? [y/n]")
 #if MultipleCollections == 'n':
