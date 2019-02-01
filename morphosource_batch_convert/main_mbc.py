@@ -162,7 +162,14 @@ else:
 #%% standardize entry order between file names and metadata ###################
 #create a string concatenating matching elements of file names, with or without collections code:
 if uc.BATCH == True:
-    CTSplit = CTdf[uc.NAME_SPECIMENS].str.split(uc.DELIMITER + '+', expand=True)
+    if uc.DELIMITER is None:
+        Entry = []
+        for name in CTdf[uc.NAME_SPECIMENS]:
+            Answer = re.search('([A-Z\/]*)([0-9].*)',name)
+            Entry.append([Answer.group(1),Answer.group(2)])
+        CTSplit = pd.DataFrame(Entry,columns = [0,1])
+    if uc.DELIMITER is not None:
+        CTSplit = CTdf[uc.NAME_SPECIMENS].str.split(uc.DELIMITER + '+', expand=True)
 if uc.BATCH == False:
     CTSplit = CTdf[uc.NAME_SCAN].str.split(uc.DELIMITER + '+', expand=True)
 if uc.SEGMENT_COLLECTION is None:
@@ -235,7 +242,10 @@ if uc.OVERT == True:
         ElementText = None
 if uc.OVERT == False:
     ElementText = CTdfReorder[uc.NAME_ELEMENT].tolist()
-    SideText = CTdfReorder[uc.NAME_SIDE].tolist()
+    if uc.NAME_SIDE is not None:
+        SideText = CTdfReorder[uc.NAME_SIDE].tolist()
+    if uc.NAME_SIDE is None:
+        SideText = None
 #%% additional CT metadata ####################################################
 #add in additional info not necessarily included in CT metadata files
 if uc.TECHNICIAN is not None:
@@ -297,7 +307,14 @@ for file in FileNamesRaw:
         PreviewNames[1].append(file_parts.group(2))
 #if there are any mesh files, split file name strings for matching
 if MeshNames[0] != []:
-    MeshSplit = pd.Series(MeshNames[0]).str.split(uc.DELIMITER + '+', expand=True)
+    if uc.DELIMITER is not None:
+        MeshSplit = pd.Series(MeshNames[0]).str.split(uc.DELIMITER + '+', expand=True)
+    if uc.DELIMITER is None:
+        Entry = []
+        for name in pd.Series(MeshNames[0]):
+            Answer = re.search('([A-Z\/]*)([0-9].*)',name)
+            Entry.append([Answer.group(1),Answer.group(2)])
+        MeshSplit = pd.DataFrame(Entry,columns = [0,1])
     if uc.SEGMENT_COLLECTION is None:
         NamePartsMesh = MeshSplit.iloc[:,uc.SEGMENT_MUSEUM] + MeshSplit.iloc[:,uc.SEGMENT_NUMBER]
     if uc.SEGMENT_COLLECTION is not None:
@@ -327,8 +344,15 @@ if MeshNames[0] != []:
     #strip names of suffixes, if present, for later matching
     MeshZip = []
     for index in range(len(MeshNames[0])):
-        if NeedSuffix == True:
-            RegexTerm = '(.*)' + uc.DELIMITER + Suffixes[index]
+        if NeedSuffix == True:      
+            if uc.DELIMITER is not None:
+                RegexTerm = '(.*)' + uc.DELIMITER + Suffixes[index]
+            if uc.DELIMITER is None:
+                Entry = []
+                for name in pd.Series(MeshNames[0]):
+                    Answer = re.search('([A-Z\/]*)([0-9].*)',name)
+                    Entry.append([Answer.group(1),Answer.group(2)])
+                RegexTerm = pd.DataFrame(Entry,columns = [0,1])
         if NeedSuffix == False:
             RegexTerm = '(.*)'
         MinusSuffix = re.match(RegexTerm, MeshNames[0][index]).group(1)

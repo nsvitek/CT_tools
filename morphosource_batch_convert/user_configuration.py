@@ -12,24 +12,24 @@ If you are not going to use a variable, don't leave it blank. Write 'None' inste
 """
 #%% File Paths ################################################################
 #path to folder where all your inputs are stored
-INPUT_PATH = 'C:/cygwin/home/N.S/scripts/CT_tools/morphosource_batch_convert/sample_data' 
+INPUT_PATH = 'C:/Users/N.S/Dropbox/Documents/UF/UF_CSBR' 
 
 #The name of the folder containing files to batch upload.
-UPLOAD_FOLDER = 'sample_batch'
+UPLOAD_FOLDER = '4Morphosource'
 #UPLOAD_FOLDER = None
 
 #The rest of your metadata should come from either a series of CT metadata files
     #or a spreadsheet.
 #The name of the folder containing CT metadata files.
-#CT_METADATA_FOLDER = 'sample_batch'
-CT_METADATA_FOLDER = None
+CT_METADATA_FOLDER = '4Morphosource'
+#CT_METADATA_FOLDER = None
 
 #If CT scan metadata is already in a spreadsheet, enter file name. 
     #Don't forget to set CT_METADATA_FOLDER = None in this case.
-CT_METADATA_FILE = 'ctscan_batch_sample1.csv'
-#CT_METADATA_FILE = None
+#CT_METADATA_FILE = 'ctscan_batch_sample1.csv'
+CT_METADATA_FILE = None
 #If have additional metadata in a separate spreadsheet (.csv or .xlsx), put that file name here
-OTHER_METADATA_FILE = 'input_sample1.csv'
+OTHER_METADATA_FILE = 'ForConversion_Mio08-09.xlsx'
 #OTHER_METADATA_FILE = None
 #Spreadsheet file options:
     #if you have a single spreadsheet with both CT metadata and other data,
@@ -37,15 +37,15 @@ OTHER_METADATA_FILE = 'input_sample1.csv'
    
 #Name of final output spreadsheet file, assuming same location as input
     #note no file ending. Will write to .xlsx
-OUTPUT_FILE = 'MSBIW_test'
+OUTPUT_FILE = 'ForMS_Mio08-09'
 #%% Fundamental setup choices #################################################
 #determine oVert now, as will set downstream choices.
 #oVert: Is this upload part of the oVert TCN grant?
-OVERT = True
+OVERT = False
 #Batch: Are there batch scans in the upload?
 BATCH = True
 #Query iDigBio: Do you want to search the iDigBio database to fill in Collection and Occurrence ID?
-QUERY_IDIGBIO = False
+QUERY_IDIGBIO = True
 #%% File name parsing #########################################################
 #User needs to set how a file name will be parsed into a specimen
     #In oVert, the recommended file naming convention is:
@@ -54,12 +54,12 @@ QUERY_IDIGBIO = False
     #or a genus name, or some other note. Notes are optional. 
 #Set how a name will be broken into pieces. Default is space, dash, or underscore
     #Note that dash and underscore both need a backslash in front of them (ex: '\_')
-DELIMITER = '[\_\- ]' 
+DELIMITER = None 
 #After a name is broken up by the delimiter, set which segment corresponds to which part.
 #The count begins at 0, so indicate the first segment with 0, the second segment with 1, etc.
 SEGMENT_MUSEUM = 0
-SEGMENT_COLLECTION = 1
-SEGMENT_NUMBER = 2
+SEGMENT_COLLECTION = None
+SEGMENT_NUMBER = 1
 SEGMENT_BODYPART = None
 #%% oVert-specific settings ###################################################
 #### TCN Institutions
@@ -116,10 +116,10 @@ MEDIA_POLICY = 3
 
 #Add additional CT settings that aren't always in raw output files:
 #Write the name of the scanning technician in quotes
-TECHNICIAN = 'Ada Lovelace'
+TECHNICIAN = 'Natasha Vitek'
 
 #Write what wedge was use in scanning, if any, in quotes.
-WEDGE = None
+WEDGE = "amaranth"
 
 #If you include shading, flux, or geometric calibrations, respectively, change to True.
 CALIBRATION_SHADE = True
@@ -148,10 +148,10 @@ NAME_FILTER = 'filter' #filter
 #This section is one you will need if OTHER_METADATA_FILE = True and you want to map
     #variables that were not included in the CT metadata section.
     #Refer to input_sample1.csv for an example of how each default maps.
-NAME_SPECIMENS = 'Catalog number'
+NAME_SPECIMENS = 'Catalogue'
 
-NAME_GENUS = 'Genus'
-NAME_SPECIES = 'Species'
+NAME_GENUS = None
+NAME_SPECIES = None
 #%% Batch variables ###########################################################
 #if you batch scanned, then you must have a spreadsheet in INPUT_DF.
     #Why? Because you need a key to match specimens to the batches they are a part of
@@ -160,9 +160,14 @@ NAME_SPECIES = 'Species'
 NAME_BATCH = 'Batch'
 #%% If not oVert, you need to set these variables, too ########################
 #Enter any grant funding as a string in quotes
-FUNDING_SOURCE = 'NSF DEB-#########'
+FUNDING_SOURCE = 'NSF DBI-1756306'
 #this is the column name containing element information
-NAME_ELEMENT = None
+NAME_ELEMENT = 'Element'
+#What is the download policy?
+#0: "Not published / Not available in public search" 
+#1: "Published / available in public search and for download"
+#2: "Published / available in public search / users must request download permission" (2).
+DOWNLOAD_POLICY = 0
 #this is the column name containing which side of the body an element comes from
 #Note: when populating this column, text options are:
 #Not Applicable [use for 'whole body'], Unknown, Left, Right, Midline
@@ -172,4 +177,4 @@ NAME_FILE = None
 
 #%% Mesh settings #############################################################
 #Do your meshes have suffixes? (ex: 'UF-M-12345_mesh.stl' or 'UF_M_12345_cropped.stl')?
-MESH_SUFFIX = True
+MESH_SUFFIX = False
