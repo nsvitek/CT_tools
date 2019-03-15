@@ -42,7 +42,7 @@ def fill_taxonomy(Worksheet, Genus, Species):
 
 #%% Fill in download permissions
 def fill_overt_downloads(Worksheet):
-    Worksheet.iloc[3:,47] = 2 #47 Publication Status
+    Worksheet.iloc[3:,47] = PubSetting #47 Publication Status
     return Worksheet
 	
 def fill_downloads(Worksheet, DownloadPolicy):
@@ -57,7 +57,7 @@ def fill_element(Worksheet, ElementText, SideText):
 #%% Fill in grant, copyright info
 def fill_permissions(Worksheet, GrantText, Provider, CopyPerm,MediaPol):
     Worksheet.iloc[3:,51] = GrantText #51= Funding information
-    Worksheet.iloc[3:,52] = f"{Provider} provided access to these data"
+    Worksheet.iloc[3:,52] = Provider
     Worksheet.iloc[3:,54] = f", the collection of which was funded by {GrantText}."
     Worksheet.iloc[3:,55] = True #55= Is it copyrighted?
     Worksheet.iloc[3:,56] = CopyPerm #56= Who gave permission?

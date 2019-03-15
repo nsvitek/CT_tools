@@ -145,8 +145,8 @@ if uc.SEGMENT_MUSEUM is None or uc.SEGMENT_NUMBER is None:
     sys.exit('Institution code or specimen number missing. Check SEGMENT_MUSEUM, SEGMENT_NUMBER, or the specimen split pattern above.')
 Institutions = SpecimensSplit.iloc[:, uc.SEGMENT_MUSEUM]
 if len(set(Institutions)) > 1:
-    Continue = eval(input('Warning: Multiple institution codes found: {Institutions}\nDo you want to continue? [y/n]'))
-    if Continue == 'n':
+    ContinueI = eval(input('Warning: Multiple institution codes found: {Institutions}\nDo you want to continue? [y/n]'))
+    if ContinueI == 'n':
         sys.exit()
 SpecimenNumbers = SpecimensSplit.iloc[:, uc.SEGMENT_NUMBER]
 #look for optional collection designation
@@ -241,7 +241,10 @@ if uc.OVERT == True:
     else:
         ElementText = None
 if uc.OVERT == False:
-    ElementText = CTdfReorder[uc.NAME_ELEMENT].tolist()
+    if uc.NAME_ELEMENT is not None:
+        ElementText = CTdfReorder[uc.NAME_ELEMENT].tolist()
+    if uc.NAME_ELEMENT is None:
+        ElementText = None
     if uc.NAME_SIDE is not None:
         SideText = CTdfReorder[uc.NAME_SIDE].tolist()
     if uc.NAME_SIDE is None:
@@ -279,6 +282,7 @@ if uc.OVERT == False:
 #%% Copyright policy ##########################################################
 CopyPerm = mp.choose_copyright_permission(uc.COPY_PERMISSION)
 MediaPol = mp.choose_media_policy(uc.MEDIA_POLICY)
+PubSetting = uc.DOWNLOAD_PERMISSION
 #%% get file names for first media object: zipped files of raw data ###########
 print('\nStarting file name input.')
 #ZipNames already has file names minus the '.zip', so add it back in
@@ -335,6 +339,11 @@ if MeshNames[0] != []:
     if NeedSuffix == True:
         #If suffix needed, look at last delimited column
         SuffixColumn = len(MeshSplit.columns)-1
+        #check to see if the "suffix" is really the body part, in which case make it the file name
+        if uc.SEGMENT_BODYPART is not None:
+            if SuffixColumn == uc.SEGMENT_BODYPART:
+                NamePartsMesh = MeshSplit.iloc[:,uc.SEGMENT_MUSEUM] + MeshSplit.iloc[:,uc.SEGMENT_COLLECTION] + MeshSplit.iloc[:,uc.SEGMENT_NUMBER] + MeshSplit.iloc[:,uc.SEGMENT_BODYPART]
+                NeedSuffix = False
         #make a column of suffixes
         Suffixes = MeshSplit.iloc[:,SuffixColumn]
     if NeedSuffix == False:
@@ -360,11 +369,11 @@ if MeshNames[0] != []:
     #if there are preview names, match mesh names exactly for now.
     #if there are meshes but no previews, ask if the user still wants to continue.
     if PreviewNames[0] == [] and MeshNames[0] != []:
-        Continue = eval(input("No preview files for meshes found. Do you want to continue? [y/n]"))
+        Continue = input("No preview files for meshes found. Do you want to continue? [y/n]")
         if Continue == 'n':
             sys.exit()
         if Continue == 'y':
-            PreviewNames2 = None
+            PreviewMatch = None
     #if there are previews, get matching
     if PreviewNames[0] != []:
         PreviewMatch = copy.deepcopy(MeshNames)
@@ -389,10 +398,14 @@ if MeshNames[0] != []:
             #subset to only the information you need for these matches
             SubNames1 = [MeshNames[0][i] for i in ZipMatches]
             SubNames2 = [MeshNames[1][i] for i in ZipMatches]
-            SubNamesP = [PreviewMatch[1][i] for i in ZipMatches]
             SubNames = ['{}.{}'.format(a, b) for a, b in zip(SubNames1,SubNames2)]
-            SubPreview = ['{}.{}'.format(a, b) for a, b in zip(SubNames1,SubNamesP)]
             SubSuffix = [Suffixes[i] for i in ZipMatches]
+            if PreviewNames[0] != []: 
+                SubNamesP = [PreviewMatch[1][i] for i in ZipMatches]            
+                SubPreview = ['{}.{}'.format(a, b) for a, b in zip(SubNames1,SubNamesP)]
+            if PreviewNames[0] == [] and MeshNames[0] != []:
+                SubNamesP = [None]
+                SubPreview = [None]
             #then iterate to fill in dictionaries for the matched zip file
             for index2 in range(len(ZipMatches)):
                 #file name
@@ -429,7 +442,7 @@ if uc.OVERT == True:
     Worksheet = ftw.fill_overt_downloads(Worksheet)
 if uc.OVERT == False:
     Worksheet = ftw.fill_downloads(Worksheet,uc.DOWNLOAD_POLICY)
-if uc.QUERY_IDIGBIO == False:
+if uc.QUERY_IDIGBIO == False and Genus is not None:
     Worksheet = ftw.fill_taxonomy(Worksheet, Genus, Species)
     
 #fix those None vs. NaN values
