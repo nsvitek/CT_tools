@@ -41,10 +41,6 @@ def fill_taxonomy(Worksheet, Genus, Species):
     return Worksheet
 
 #%% Fill in download permissions
-def fill_overt_downloads(Worksheet):
-    Worksheet.iloc[3:,47] = PubSetting #47 Publication Status
-    return Worksheet
-	
 def fill_downloads(Worksheet, DownloadPolicy):
     Worksheet.iloc[3:,47] = DownloadPolicy #47 Publication Status
     return Worksheet	

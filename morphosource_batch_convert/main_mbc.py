@@ -282,7 +282,6 @@ if uc.OVERT == False:
 #%% Copyright policy ##########################################################
 CopyPerm = mp.choose_copyright_permission(uc.COPY_PERMISSION)
 MediaPol = mp.choose_media_policy(uc.MEDIA_POLICY)
-PubSetting = uc.DOWNLOAD_PERMISSION
 #%% get file names for first media object: zipped files of raw data ###########
 print('\nStarting file name input.')
 #ZipNames already has file names minus the '.zip', so add it back in
@@ -433,15 +432,13 @@ Worksheet = ftw.fill_description(Worksheet, SpecimensRaw)
 Worksheet = ftw.fill_ids(Worksheet,SpecimenDf)
 Worksheet = ftw.fill_permissions(Worksheet,GrantText,uc.PROVIDER,CopyPerm,MediaPol)
 Worksheet = ftw.fill_ctmetadata(Worksheet,CTdfReorder)
+Worksheet = ftw.fill_downloads(Worksheet,uc.DOWNLOAD_POLICY)
 if ElementText is not None:
     Worksheet = ftw.fill_element(Worksheet,ElementText,SideText)
 Worksheet = ftw.fill_zip(Worksheet,ZipFileNames, ZipTitle)
 if MeshData is not None:
     Worksheet = ftw.fill_meshes(Worksheet, MeshData)
-if uc.OVERT == True:
-    Worksheet = ftw.fill_overt_downloads(Worksheet)
-if uc.OVERT == False:
-    Worksheet = ftw.fill_downloads(Worksheet,uc.DOWNLOAD_POLICY)
+    
 if uc.QUERY_IDIGBIO == False and Genus is not None:
     Worksheet = ftw.fill_taxonomy(Worksheet, Genus, Species)
     

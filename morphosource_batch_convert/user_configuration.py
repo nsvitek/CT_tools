@@ -113,7 +113,7 @@ MEDIA_POLICY = 3
 #0: unpublished
 #1: published, with unrestricted download
 #2: published, with request to download necessary
-DOWNLOAD_PERMISSION = 2
+DOWNLOAD_POLICY = 2
 
 #%% CT metadata ###############################################################
 ##Are the CT metadata still in a series of raw CT output files, 
@@ -169,11 +169,6 @@ NAME_BATCH = 'Batch'
 FUNDING_SOURCE = 'NSF DBI-1756306'
 #this is the column name containing element information
 NAME_ELEMENT = None
-#What is the download policy?
-#0: "Not published / Not available in public search" 
-#1: "Published / available in public search and for download"
-#2: "Published / available in public search / users must request download permission" (2).
-DOWNLOAD_POLICY = 0
 #this is the column name containing which side of the body an element comes from
 #Note: when populating this column, text options are:
 #Not Applicable [use for 'whole body'], Unknown, Left, Right, Midline
