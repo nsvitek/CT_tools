@@ -16,11 +16,11 @@ import ct_metadata as ctmd
 #User sets each of these variables in ALL CAPS
 
 # user enters path of folder containing files, or individual file
-INPUT_PATH = "E:/"
+INPUT_PATH = "D:/4Morphosource/pcas"
 #INPUT_PATH = "C:/path/to/files"
 
 # ask the user for an output file name
-OUTPUT_NAME = "test"
+OUTPUT_NAME = "D:/4Morphosource/test"
 
 #%% End User Configuration. ##################################################
 #%% Start running script. ####################################################

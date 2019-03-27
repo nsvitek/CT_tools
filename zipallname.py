@@ -18,7 +18,7 @@ goldenmole = goldenmole.goldenmole
 Raw = True
 
 #If Raw = True, you can also specify to only zip folders with a certain prefix in their name (RawPrefix).
-RawPrefix = 'UF*'
+RawPrefix = ''
 
 #Then decide if you want to zip .tiff's only (ImgOnly = True) or if you want to zip up all files in a folder.
 ImgOnly = True
@@ -34,7 +34,7 @@ ColName = 'specimen_num'
 HighestSearch = ''
 
 #Set the container folder where the script should start looking for folders
-ContainerName = 'D:/porcupine4morphosource/haile7c_1_partial2/'
+ContainerName = 'D:/4Morphosource/'
 
 
 
