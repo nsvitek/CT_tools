@@ -17,7 +17,7 @@ goldenmole = goldenmole.goldenmole
 #set the container folder for specimen data
 # Container = '/cygdrive/d/'
 # Container = '/cygdrive/f/CT_maniculatus'
-Container = 'E://'
+Container = 'H://'
 
 
 #set the destination folder
@@ -28,19 +28,19 @@ Pen = 'D://ms'
 # Pen = '/cygdrive/d/pen'
 
 #set the file/column location for the list of desired specimens
-DeciderFile = 'D://NeedZips.csv'
+DeciderFile = 'D://temp_mice-20191219.csv'
 # DeciderFile = 'D://Dropbox/Documents/Dissertation/modern/onychomys_leucogaster/ol_m1_raw.csv'
 # DeciderFile = 'C://Users/N.S/Dropbox/Documents/Dissertation/PETMperadectes/all_marsupials/all_marsupials_scanned.csv'
 # ColName = 'fullname'
 # DeciderFile = 'C://Users/N.S/Documents/UCMP.csv'
 # DeciderFile = 'C://Users/N.S/Documents/Dissertation/PETMerinaceomorph/PETMmacro.csv'
 # DeciderFile = 'C://Users/N.S/Documents/Dissertation/PETMerinaceomorph/p_4/macrocranion_p_4.csv'
-ColName = 'scan_name'
+ColName = 'filename'
 
 #set the string pattern to catch the kinds of files you want
 # Pattern = '.*p4.*_crop.*.ply'
 # Pattern = '.*m[x123].*_crop.*.ply'
-Pattern = '.*.zip'
+Pattern = '.*.ply'
 #Pattern = '.*_raw.*.ply'
 
 #Pattern = '.*.png'
@@ -50,7 +50,7 @@ Suffix = ''
 # Suffix = '_hi'
 #set the pattern you want to match for highest folder names
 # HighestSearch = 'maniculatus' #formerly FolderPattern
-HighestSearch = 'CT' #formerly FolderPattern
+HighestSearch = 'CT_onychomys' #formerly FolderPattern
 
 #set the number of intermediate folder levels (folders with unimportant names between HighestFolder and the folder containing your specimen number)
 NumberIntermeds = 2
