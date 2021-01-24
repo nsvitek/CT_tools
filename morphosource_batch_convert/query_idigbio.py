@@ -5,6 +5,7 @@ from builtins import input
 from builtins import range
 import idigbio #for query_idigbio.py
 import pandas as pd
+from numpy import nan
 
 def find_options(InstitutionCode,CatalogNumber):
     #for now, using only the first specimen to find correct collection. 
@@ -81,8 +82,14 @@ def make_occurrence_df(CollectionsChoice,SpecimensSplit,InstituteCol,CatalogCol)
                  "collectioncode": CollectionsChoice}
         api = idigbio.json() #shorten
         TempRecords = api.search_records(rq= Query )
-        ### ! Future: if this query doesn't return anything, there's something very wrong. Flag.
-        OccurrenceIDs.append(TempRecords['items'][0]['indexTerms']['occurrenceid'])
+        ## If no results are returned from the query, then we should not return any info on occurrence ids
+        ## but should also not crash the program
+        if not bool(TempRecords['items']):
+            ## this means that no record was found on idigbio. append an empty item instead
+            OccurrenceIDs.append(nan)
+        else:
+            OccurrenceIDs.append(TempRecords['items'][0]['indexTerms']['occurrenceid'])
+
     SpecimenDictionary = {'Institution': list(SpecimensSplit.iloc[:,InstituteCol]),
                       'Collection' : Collections,
                       'CatalogNumber': list(SpecimensSplit.iloc[:,CatalogCol]),
