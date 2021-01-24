@@ -95,4 +95,9 @@ def make_occurrence_df(CollectionsChoice,SpecimensSplit,InstituteCol,CatalogCol)
                       'CatalogNumber': list(SpecimensSplit.iloc[:,CatalogCol]),
                       'OccurrenceID': OccurrenceIDs}
     SpecimenDf = pd.DataFrame.from_dict(SpecimenDictionary)
+    return SpecimenDfteCol]),
+                      'Collection' : Collections,
+                      'CatalogNumber': list(SpecimensSplit.iloc[:,CatalogCol]),
+                      'OccurrenceID': OccurrenceIDs}
+    SpecimenDf = pd.DataFrame.from_dict(SpecimenDictionary)
     return SpecimenDf
