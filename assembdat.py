@@ -17,30 +17,30 @@ goldenmole = goldenmole.goldenmole
 #set the container folder for specimen data
 # Container = '/cygdrive/d/'
 # Container = '/cygdrive/f/CT_maniculatus'
-Container = 'H://'
+Container = 'E://'
 
 
 #set the destination folder
-Pen = 'D://ms'
+Pen = 'D://plagio'
 # Pen = 'D://Dropbox/Documents/Dissertation/modern/onychomys_leucogaster/ol_m1_raw'
 # Pen = 'C://Users/N.S/Dropbox/Documents/Dissertation/sys_eulipotyphla/talpavoides_QC_raw'
 
 # Pen = '/cygdrive/d/pen'
 
 #set the file/column location for the list of desired specimens
-DeciderFile = 'D://temp_mice-20191219.csv'
+DeciderFile = 'D://plagio_UF_NRF.csv'
 # DeciderFile = 'D://Dropbox/Documents/Dissertation/modern/onychomys_leucogaster/ol_m1_raw.csv'
 # DeciderFile = 'C://Users/N.S/Dropbox/Documents/Dissertation/PETMperadectes/all_marsupials/all_marsupials_scanned.csv'
 # ColName = 'fullname'
 # DeciderFile = 'C://Users/N.S/Documents/UCMP.csv'
 # DeciderFile = 'C://Users/N.S/Documents/Dissertation/PETMerinaceomorph/PETMmacro.csv'
 # DeciderFile = 'C://Users/N.S/Documents/Dissertation/PETMerinaceomorph/p_4/macrocranion_p_4.csv'
-ColName = 'filename'
+ColName = 'scan_name'
 
 #set the string pattern to catch the kinds of files you want
 # Pattern = '.*p4.*_crop.*.ply'
 # Pattern = '.*m[x123].*_crop.*.ply'
-Pattern = '.*.ply'
+Pattern = '.*crop.*.ply'
 #Pattern = '.*_raw.*.ply'
 
 #Pattern = '.*.png'
@@ -50,7 +50,7 @@ Suffix = ''
 # Suffix = '_hi'
 #set the pattern you want to match for highest folder names
 # HighestSearch = 'maniculatus' #formerly FolderPattern
-HighestSearch = 'CT_onychomys' #formerly FolderPattern
+HighestSearch = 'CT_UF_NRF' #formerly FolderPattern
 
 #set the number of intermediate folder levels (folders with unimportant names between HighestFolder and the folder containing your specimen number)
 NumberIntermeds = 2
